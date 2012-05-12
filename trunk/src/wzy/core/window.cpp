@@ -68,8 +68,7 @@ Window::Key Window::asciiToKey(unsigned char key) {
     case 'y': return Key::y;
     case 'z': return Key::z;
 
-    default:
-        throw std::runtime_error("ASCII code not valid key.");
+    default: throw Exception("ASCII code not valid key.");
     }
 }
 
@@ -101,6 +100,8 @@ unsigned char Window::keyToAscii(Key k) {
     case Key::x: return 'x';
     case Key::y: return 'y';
     case Key::z: return 'z';
+
+    default: throw Exception("Key not an ASCII code.");
     }
 }
 

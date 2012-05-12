@@ -42,6 +42,12 @@ Image::Image(const std::string& fileName) :
 
     if (!mPrivate->bitmap)
         throw Exception("Unable to create image from file " + fileName + ".");
+
+    int curbpp = bpp();
+    if (curbpp != 8 && curbpp != 24 && curbpp != 32) {
+        FreeImage_Unload(mPrivate->bitmap);
+        throw Exception("Images have to be 8-, 24- or 32-bit.");
+    }
 }
 
 Image::Image(const Image& other) :
@@ -69,6 +75,24 @@ Image& Image::operator=(const Image& rhs) {
     mPrivate->bitmap = temp;
 
     return *this;
+}
+
+
+// ----------------------------------------------------
+int Image::width() const {
+    return FreeImage_GetWidth(mPrivate->bitmap);
+}
+
+int Image::height() const {
+    return FreeImage_GetHeight(mPrivate->bitmap);
+}
+
+int Image::bpp() const {
+    return FreeImage_GetBPP(mPrivate->bitmap);
+}
+
+const unsigned char* Image::data() const {
+    return FreeImage_GetBits(mPrivate->bitmap);
 }
 
 }

@@ -3,17 +3,22 @@
 #include <algorithm>
 
 #include <wzy/render/glew.hpp>
+#include <wzy/utilities/general.hpp>
 
 
 namespace wzy {
 namespace render {
 
+
+// ---------------------------------------
 Program::Program() :
     mName(glCreateProgram()),
     mShaders() {
 
     if (!mName)
         throw Exception("Program creation failed.");
+
+    setDefault();
 }
 
 Program::~Program() {
@@ -27,7 +32,7 @@ bool Program::attached(const std::shared_ptr<BasicShader>& shader) const {
     return it != mShaders.end();
 }
 
-void Program::link() {
+void Program::link() const {
     glLinkProgram(mName);
     if (!linked())
         throw Exception("Unable to link program.");
@@ -51,6 +56,8 @@ void Program::validate() const {
 }
 
 void Program::use() const {
+    if (!linked())
+        link();
     validate();
     glUseProgram(mName);
 }
@@ -61,6 +68,12 @@ const std::string Program::infoLog() const {
     std::unique_ptr<GLchar[]> data(new GLchar[len]);
     glGetProgramInfoLog(mName, len, nullptr, data.get());
     return std::string(data.get());
+}
+
+void Program::setDefault() {
+    shader<BasicShader::Type::Vertex>()->setSource(fileToString("shaders/default/vertex.glsl"));
+    shader<BasicShader::Type::Fragment>()->setSource(fileToString("shaders/default/fragment.glsl"));
+    link();
 }
 
 

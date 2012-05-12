@@ -28,7 +28,7 @@ public:
         DynamicDraw, DynamicRead, DynamicCopy
     };
 
-    template <class T, Type type, Usage usage>
+    template <class T, Type ttype, Usage usage>
     friend class Buffer;
 
 
@@ -60,7 +60,7 @@ private:
 };
 
 
-template <class T, BasicBuffer::Type ttype, BasicBuffer::Usage usage>
+template <class T, BasicBuffer::Type ttype, BasicBuffer::Usage usage = BasicBuffer::Usage::StaticDraw>
 class Buffer final : public BasicBuffer {
 public:
     template <class... Args>

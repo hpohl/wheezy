@@ -19,8 +19,11 @@ public:
     ~Program();
 
 
+    unsigned int name() const
+    { return mName; }
+
     template <BasicShader::Type type>
-    const std::shared_ptr<Shader<type> > getShader();
+    const std::shared_ptr<Shader<type> > shader();
 
     template <BasicShader::Type type>
     void setShader(const std::shared_ptr<Shader<type> >& shader);
@@ -28,7 +31,7 @@ public:
 
     bool attached(const std::shared_ptr<BasicShader>& shader) const;
 
-    void link();
+    void link() const;
 
     bool linked() const;
 
@@ -38,6 +41,8 @@ public:
     void use() const;
 
     const std::string infoLog() const;
+
+    void setDefault();
 
 private:
     const unsigned int mName;
@@ -50,11 +55,13 @@ private:
 };
 
 template <BasicShader::Type type>
-const std::shared_ptr<Shader<type> > Program::getShader() {
+const std::shared_ptr<Shader<type> > Program::shader() {
     for (std::shared_ptr<BasicShader>& shader : mShaders)
         if (shader->type() == type)
             return std::static_pointer_cast<Shader<type> >(shader);
-    throw Exception("No shader of that type found.");
+    auto newShader = std::make_shared<Shader<type>>();
+    setShader(newShader);
+    return newShader;
 }
 
 template <BasicShader::Type type>

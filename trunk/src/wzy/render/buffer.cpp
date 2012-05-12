@@ -72,7 +72,7 @@ bool BasicBuffer::bound() const {
 
     glGetIntegerv(target, &name);
 
-    return name == mName;
+    return (name == static_cast<GLint>(mName));
 }
 
 

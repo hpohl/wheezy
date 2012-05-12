@@ -1,7 +1,9 @@
 #ifndef WZY_RENDER_SHADER_HPP
 #define WZY_RENDER_SHADER_HPP
 
+#include <map>
 #include <string>
+#include <tuple>
 
 #include <wzy/utilities/noncopyable.hpp>
 
@@ -11,13 +13,23 @@ namespace render {
 
 class BasicShader : public NonCopyable {
 public:
-    // Locations
-    constexpr static int vertexLoc = 10;
-
     enum class Type {
         Fragment,
         Vertex
     };
+
+    struct BuiltIn {
+        std::string specifier;
+        std::string type;
+        int location;
+    };
+
+    typedef std::map<std::string, BuiltIn> BuiltIns;
+
+
+    static const BuiltIns builtIns();
+    static const BuiltIn findBuiltIn(const std::string& name);
+    static void parseSource(std::string& src);
 
     BasicShader(BasicShader::Type t);
     virtual ~BasicShader() = 0;
@@ -31,12 +43,13 @@ public:
     void setSource(const std::string& source);
 
     void compile();
-
     bool compiled() const;
 
     const std::string infoLog() const;
 
 private:
+    static BuiltIns mBuiltIns;
+
     const unsigned int mName;
 };
 

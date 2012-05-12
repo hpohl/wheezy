@@ -1,6 +1,7 @@
 #include <wzy/render/shader.hpp>
 
 #include <memory>
+#include <sstream>
 
 #include <wzy/render/glew.hpp>
 #include <wzy/utilities/exception.hpp>
@@ -23,6 +24,56 @@ GLenum typeToGL(BasicShader::Type t) {
     }
 }
 
+}
+
+
+// ---------------------------------------
+BasicShader::BuiltIns BasicShader::mBuiltIns = {
+    // Vector data
+    {"wzyPosition", {"in", "vec4", 10}},
+    {"wzyTexCoord", {"in", "vec2", 11}},
+    {"wzyColor", {"in", "vec4", 12}},
+
+    // Uniforms
+    {"wzyModelViewMatrix", {"uniform", "mat4", 20}},
+    {"wzyProjectionMatrix", {"uniform", "mat4", 21}}
+};
+
+
+// ---------------------------------------
+const BasicShader::BuiltIns BasicShader::builtIns() {
+    return mBuiltIns;
+}
+
+const BasicShader::BuiltIn BasicShader::findBuiltIn(const std::string& name) {
+    auto it = mBuiltIns.find(name);
+    if (it == mBuiltIns.end())
+        throw Exception("Unable to find shader builtin named " + name + ".");
+    return it->second;
+}
+
+void BasicShader::parseSource(std::string& src) {
+    for (BuiltIns::value_type& p : mBuiltIns) {
+        auto name = p.first;
+        auto builtin = p.second;
+
+        if (src.find(name) != std::string::npos) {
+            std::stringstream ss;
+
+            if (builtin.specifier == "in")
+                ss << "layout(location = " << builtin.location << ") ";
+
+            if (builtin.specifier == "uniform")
+                ss << "layout(binding = " << builtin.location << ") ";
+
+            ss << builtin.specifier << " " << builtin.type << " " << name << ";" << std::endl;
+
+            std::string addition(ss.str());
+            src.insert(src.begin(), addition.begin(), addition.end());
+        }
+    }
+
+    src.insert(0, "#version 420\n");
 }
 
 
@@ -60,8 +111,11 @@ const std::string BasicShader::source() const {
 }
 
 void BasicShader::setSource(const std::string& source) {
-    const GLchar* csource = source.c_str();
-    const GLint len = source.length();
+    std::string parsedSource(source);
+    parseSource(parsedSource);
+
+    const GLchar* csource = parsedSource.c_str();
+    const GLint len = parsedSource.length();
     glShaderSource(mName, 1, &csource, &len);
 }
 
@@ -84,6 +138,7 @@ const std::string BasicShader::infoLog() const {
     glGetShaderInfoLog(mName, len, nullptr, data.get());
     return std::string(data.get());
 }
+
 
 }
 }

@@ -12,6 +12,9 @@ void init() {
     if (!initialised) {
         if (glewInit() != GLEW_NO_ERROR)
             throw Exception("Unable to initialise renderer.");
+
+        glEnable(GL_TEXTURE_2D);
+
         initialised = true;
     }
 }

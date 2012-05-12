@@ -7,6 +7,7 @@
 namespace wzy {
 
 const std::string getFileExtension(const std::string& fileName);
+const std::string fileToString(const std::string& fileName);
 
 }
 

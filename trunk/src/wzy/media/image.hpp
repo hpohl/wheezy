@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+#include <wzy/utilities/vec.hpp>
+
 
 namespace wzy {
 
@@ -18,6 +20,15 @@ public:
     Image(const Image& other);
     ~Image();
     Image& operator=(const Image& rhs);
+
+    int width() const;
+    int height() const;
+    Vector2i size() const
+    { return {width(), height()}; }
+
+    int bpp() const;
+
+    const unsigned char* data() const;
 
 private:
     struct Private;
