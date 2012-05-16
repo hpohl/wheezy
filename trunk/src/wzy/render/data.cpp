@@ -11,12 +11,21 @@ namespace render {
 Data::Data() :
     mName(0),
     mVertexBuffer(),
+    mColourBuffer(),
     mTexCoordBuffer() {
 
     glGenVertexArrays(1, &mName);
     if (!mName)
         throw Exception("Unable to create vertex array.");
 }
+
+Data::Data(const std::shared_ptr<const VertexBuffer>& vertices,
+           const std::shared_ptr<const ColourBuffer>& colours,
+           const std::shared_ptr<const TexCoordBuffer>& texCoords) :
+    mName(0),
+    mVertexBuffer(vertices),
+    mColourBuffer(colours),
+    mTexCoordBuffer(texCoords) { }
 
 Data::~Data() {
     glDeleteVertexArrays(1, &mName);
@@ -41,8 +50,8 @@ void Data::set() const {
         auto loc = BasicShader::findBuiltIn("wzyTexCoord").location;
         glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(loc);
-    } if (mColorBuffer) {
-        mColorBuffer->bind();
+    } if (mColourBuffer) {
+        mColourBuffer->bind();
         auto loc = BasicShader::findBuiltIn("wzyColor").location;
         glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(loc);

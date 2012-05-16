@@ -5,7 +5,11 @@
 
 namespace wzy {
 
-Engine::Engine() {
+Engine::Engine() :
+    Singleton<Engine>(),
+    Window(),
+    mStates(),
+    mSceneManager(new SceneManager) {
     render::init();
 }
 
@@ -17,6 +21,10 @@ Engine::~Engine() {
 void Engine::frame() {
     for (std::shared_ptr<State>& state : mStates) {
         state->update();
+    }
+
+    for (const std::shared_ptr<Entity>& ent : mSceneManager->entities()) {
+        ent->draw();
     }
 }
 

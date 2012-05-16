@@ -7,7 +7,9 @@
 
 #include <wzy/render/shader.hpp>
 #include <wzy/utilities/exception.hpp>
+#include <wzy/utilities/mat.hpp>
 #include <wzy/utilities/noncopyable.hpp>
+#include <wzy/utilities/vec.hpp>
 
 
 namespace wzy {
@@ -44,6 +46,11 @@ public:
 
     void setDefault();
 
+
+    template <int cols, int rows>
+    void uniform(const Matrix<cols, rows, float>& m, const std::string& name)
+    { uniform(cols, rows, m.data(), name); }
+
 private:
     const unsigned int mName;
     std::vector<std::shared_ptr<BasicShader> > mShaders;
@@ -52,6 +59,8 @@ private:
     void detach(const std::shared_ptr<BasicShader>& shader);
 
     bool attachedGL(const std::shared_ptr<BasicShader>& shader) const;
+
+    void uniform(int cols, int rows, const float* val, const std::string& name);
 };
 
 template <BasicShader::Type type>

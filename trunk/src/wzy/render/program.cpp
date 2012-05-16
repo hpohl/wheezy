@@ -76,6 +76,50 @@ void Program::setDefault() {
     link();
 }
 
+void Program::uniform(int cols, int rows, const float* val, const std::string& name) {
+    validate();
+
+    void (*func)(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) = nullptr;
+
+    switch (cols) {
+    case 2:
+        switch (rows) {
+        case 2: func = glUniformMatrix2fv; break;
+        case 3: func = glUniformMatrix2x3fv; break;
+        case 4: func = glUniformMatrix2x4fv; break;
+        default: throw Exception("Invalid matrix row number in uniform.");
+        }
+        break;
+
+    case 3:
+        switch (rows) {
+        case 2: func = glUniformMatrix3x2fv; break;
+        case 3: func = glUniformMatrix3fv; break;
+        case 4: func = glUniformMatrix3x4fv; break;
+        default: throw Exception("Invalid matrix row number in uniform.");
+        }
+        break;
+
+    case 4:
+        switch (rows) {
+        case 2: func = glUniformMatrix4x2fv; break;
+        case 3: func = glUniformMatrix4x3fv; break;
+        case 4: func = glUniformMatrix4fv; break;
+        default: throw Exception("Invalid matrix row number in uniform.");
+        }
+        break;
+
+    default: throw Exception("Invalid matrix coloumn number in uniform.");
+    }
+
+    GLint loc = glGetUniformLocation(mName, name.c_str());
+
+    if (loc == -1)
+        throw Exception("Matrix uniform " + name + " not found in program.");
+
+    func(loc, 1, GL_FALSE, val);
+}
+
 
 // ---------------------------------------------------
 void Program::attach(const std::shared_ptr<BasicShader>& shader) {

@@ -53,6 +53,9 @@ struct AccessImpl<n, T, 3> : public AccessImpl<n, T, 2> {
 template <int n, class T>
 class Vector : public detail::vec::AccessImpl<n, T, n - 1> {
 public:
+    Vector() :
+        mData {0} { }
+
     template <class... Args>
     Vector(Args&&... args) :
         mData {static_cast<T>(args)...} { }
@@ -68,6 +71,20 @@ public:
 private:
     T mData[n];
 };
+
+
+// Operators
+template <int n, class Tlhs, class Trhs>
+bool operator==(const Vector<n, Tlhs>& lhs, const Vector<n, Trhs>& rhs) {
+    for (int i = 0; i < n; ++i)
+        if (lhs[i] != rhs[i])
+            return false;
+    return true;
+}
+
+template <int n, class Tlhs, class Trhs>
+inline bool operator!=(const Vector<n, Tlhs>& lhs, const Vector<n, Trhs>& rhs)
+{ return !(lhs == rhs); }
 
 
 // Template aliases

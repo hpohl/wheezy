@@ -7,6 +7,8 @@
 
 #include <wzy/core/engine.hpp>
 #include <wzy/media/image.hpp>
+#include <wzy/scene/entity.hpp>
+#include <wzy/scene/model.hpp>
 #include <wzy/render/data.hpp>
 #include <wzy/render/program.hpp>
 #include <wzy/render/shader.hpp>
@@ -34,7 +36,7 @@ std::vector<wzy::Vector2f> texCoords = {
     {0.0, 1.0}
 };
 
-std::vector<wzy::Vector4f> colors = {
+std::vector<wzy::Vector4f> colours = {
     {1.0, 0.0, 0.0, 1.0},
     {0.0, 1.0, 0.0, 1.0},
     {0.0, 0.0, 1.0, 1.0},
@@ -46,6 +48,13 @@ std::vector<wzy::Vector4f> colors = {
 
 class TestingState : public wzy::State {
 public:
+    TestingState() :
+        mProg(),
+        mEnt(wzy::Engine::singleton().sceneManager()->addEntity<wzy::Entity>(std::make_shared<wzy::Model>(vertices, colours))) {
+
+        mProg.use();
+    }
+
     void update() {
         // -------------------------------------------------------------
         wzy::Image img("images/bruce.png");
@@ -54,31 +63,11 @@ public:
         tex.setData(img.size(), img.bpp(), img.data());
         tex.activateSlot(0);
         tex.bind();
-
-
-        // ------------------------------------------------
-        wzy::render::Program prog;
-        prog.use();
-
-
-        auto vbo = std::make_shared<wzy::render::Data::VertexBuffer>();
-        vbo->setData(vertices);
-
-        auto tcbo = std::make_shared<wzy::render::Data::TexCoordBuffer>();
-        tcbo->setData(texCoords);
-
-        auto cbo = std::make_shared<wzy::render::Data::ColourBuffer>();
-        cbo->setData(colors);
-
-
-        wzy::render::Data data;
-
-        data.setVertices(vbo);
-        data.setColors(cbo);
-
-
-        data.draw();
     }
+
+private:
+    wzy::render::Program mProg;
+    std::shared_ptr<wzy::Entity> mEnt;
 };
 
 int main()

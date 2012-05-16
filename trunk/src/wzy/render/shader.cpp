@@ -35,8 +35,8 @@ BasicShader::BuiltIns BasicShader::mBuiltIns = {
     {"wzyColor", {"in", "vec4", 12}},
 
     // Uniforms
-    {"wzyModelViewMatrix", {"uniform", "mat4", 20}},
-    {"wzyProjectionMatrix", {"uniform", "mat4", 21}}
+    {"wzyModelViewMatrix", {"uniform", "mat4", -1}},
+    {"wzyProjectionMatrix", {"uniform", "mat4", -1}}
 };
 
 
@@ -61,10 +61,7 @@ void BasicShader::parseSource(std::string& src) {
             std::stringstream ss;
 
             if (builtin.specifier == "in")
-                ss << "layout(location = " << builtin.location << ") ";
-
-            if (builtin.specifier == "uniform")
-                ss << "layout(binding = " << builtin.location << ") ";
+                ss << "layout(location=" << builtin.location << ") ";
 
             ss << builtin.specifier << " " << builtin.type << " " << name << ";" << std::endl;
 
@@ -73,6 +70,7 @@ void BasicShader::parseSource(std::string& src) {
         }
     }
 
+    src.insert(0, "#extension GL_ARB_shading_language_420pack: enable\n");
     src.insert(0, "#version 420\n");
 }
 

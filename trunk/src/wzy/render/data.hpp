@@ -13,31 +13,34 @@ namespace render {
 
 class Data final : public NonCopyable {
 public:
-    typedef Buffer<Vector4f, BasicBuffer::Type::Array> VertexBuffer;
-    typedef Buffer<Vector2f, BasicBuffer::Type::Array> TexCoordBuffer;
-    typedef Buffer<Vector4f, BasicBuffer::Type::Array> ColourBuffer;
+    typedef ArrayBuffer<Vector4f, AbstractBasicBuffer::Usage::StaticDraw> VertexBuffer;
+    typedef ArrayBuffer<Vector2f, AbstractBasicBuffer::Usage::StaticDraw> TexCoordBuffer;
+    typedef ArrayBuffer<Vector4f, AbstractBasicBuffer::Usage::StaticDraw> ColourBuffer;
 
     Data();
+    Data(const std::shared_ptr<const VertexBuffer>& vertices,
+         const std::shared_ptr<const ColourBuffer>& colours = std::shared_ptr<const ColourBuffer>(),
+         const std::shared_ptr<const TexCoordBuffer>& texCoords = std::shared_ptr<const TexCoordBuffer>());
     ~Data();
 
     void bind() const;
     void set() const;
     void draw() const;
 
-    void setVertices(const std::shared_ptr<VertexBuffer>& buffer)
+    void setVertices(const std::shared_ptr<const VertexBuffer>& buffer)
     { mVertexBuffer = buffer; }
 
-    void setTexCoords(const std::shared_ptr<TexCoordBuffer>& buffer)
+    void setTexCoords(const std::shared_ptr<const TexCoordBuffer>& buffer)
     { mTexCoordBuffer = buffer; }
 
-    void setColors(const std::shared_ptr<ColourBuffer>& buffer)
-    { mColorBuffer = buffer; }
+    void setColours(const std::shared_ptr<const ColourBuffer>& buffer)
+    { mColourBuffer = buffer; }
 
 private:
     unsigned int mName;
-    std::shared_ptr<VertexBuffer> mVertexBuffer;
-    std::shared_ptr<TexCoordBuffer> mTexCoordBuffer;
-    std::shared_ptr<ColourBuffer> mColorBuffer;
+    std::shared_ptr<const VertexBuffer> mVertexBuffer;
+    std::shared_ptr<const ColourBuffer> mColourBuffer;
+    std::shared_ptr<const TexCoordBuffer> mTexCoordBuffer;
 };
 
 }

@@ -1,5 +1,7 @@
 #include <wzy/render/buffer.hpp>
 
+#include <map>
+
 #include <wzy/render/glew.hpp>
 #include <wzy/utilities/exception.hpp>
 
@@ -9,26 +11,47 @@ namespace render {
 
 namespace {
 
-GLenum typeToGL(BasicBuffer::Type t) {
-    switch (t) {
-    case BasicBuffer::Type::Array: return GL_ARRAY_BUFFER;
-    case BasicBuffer::Type::Texture: return GL_TEXTURE_BUFFER;
-    default: throw Exception("Uknown BasicBuffer type.");
-    }
+struct TypeInfo {
+    GLenum target;
+    GLenum binding;
+};
+
+std::map<AbstractBasicBuffer::Type, TypeInfo> typeMap = {
+    {AbstractBasicBuffer::Type::Array, {GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING}},
+    {AbstractBasicBuffer::Type::Uniform, {GL_UNIFORM_BUFFER, GL_UNIFORM_BUFFER_BINDING}}
+};
+
+const TypeInfo typeToInfo(AbstractBasicBuffer::Type t) {
+    auto it = typeMap.find(t);
+    if (it == typeMap.end())
+        throw Exception("Unkwnone buffer type.");
+    return it->second;
 }
 
-GLenum usageToGL(BasicBuffer::Usage u) {
-    switch (u) {
-    case BasicBuffer::Usage::StaticDraw: return GL_STATIC_DRAW;
-    default: throw Exception("Unknown BasicBuffer usage.");
-    }
+GLenum typeToTarget(AbstractBasicBuffer::Type t)
+{ return typeToInfo(t).target; }
+
+GLenum typeToBinding(AbstractBasicBuffer::Type t)
+{ return typeToInfo(t).binding; }
+
+
+// --------------------------------------------------
+std::map<AbstractBasicBuffer::Usage, GLenum> usageMap = {
+    {AbstractBasicBuffer::Usage::StaticDraw, GL_STATIC_DRAW}
+};
+
+GLenum usageToGL(AbstractBasicBuffer::Usage u) {
+    auto it = usageMap.find(u);
+    if (it == usageMap.end())
+        throw Exception("Unknown buffer usage.");
+    return it->second;
 }
 
 }
 
 
 // -------------------------------------------------
-BasicBuffer::BasicBuffer(Type t, Usage u) :
+AbstractBasicBuffer::AbstractBasicBuffer(Type t, Usage u) :
     mName(0),
     mType(t),
     mUsage(u),
@@ -36,67 +59,47 @@ BasicBuffer::BasicBuffer(Type t, Usage u) :
 
     glGenBuffers(1, &mName);
     if (!mName)
-        throw Exception("Unable to create BasicBuffer.");
+        throw Exception("Unable to create AbstractBasicBuffer.");
 }
 
-BasicBuffer::~BasicBuffer() {
+AbstractBasicBuffer::~AbstractBasicBuffer() {
     glDeleteBuffers(1, &mName);
 }
 
 
 // --------------------------------------------
-void BasicBuffer::bind() {
-    glBindBuffer(typeToGL(mType), mName);
+void AbstractBasicBuffer::bind() const {
+    glBindBuffer(typeToTarget(mType), mName);
 
     if (!bound())
-        throw Exception("Unable to bind BasicBuffer.");
+        throw Exception("Unable to bind AbstractBasicBuffer.");
 }
 
-void BasicBuffer::unbind() {
-    glBindBuffer(typeToGL(mType), 0);
+void AbstractBasicBuffer::bindBase(unsigned int index) {
+    glBindBufferBase(typeToTarget(mType), index, mName);
 }
 
-bool BasicBuffer::bound() const {
-    GLenum target = 0;
+void AbstractBasicBuffer::unbind() const {
+    glBindBuffer(typeToTarget(mType), 0);
+}
 
-    switch (mType) {
-    case Type::Array:
-        target = GL_ARRAY_BUFFER_BINDING;
-        break;
-
-    default:
-        throw Exception ("Unknown BasicBuffer type.");
-    }
-
+bool AbstractBasicBuffer::bound() const {
     GLint name = 0;
-
-    glGetIntegerv(target, &name);
-
+    glGetIntegerv(typeToBinding(mType), &name);
     return (name == static_cast<GLint>(mName));
 }
 
 
 // --------------------------------------------------
-void BasicBuffer::setData(size_t size, const void* data) {
+void AbstractBasicBuffer::setData(size_t size, const void* data) {
     bind();
-
-    glGetError();
-    glBufferData(typeToGL(mType), size, data, usageToGL(mUsage));
-
-    if (glGetError() != GL_NO_ERROR)
-        throw Exception("Unable to set BasicBuffer data.");
-
+    glBufferData(typeToTarget(mType), size, data, usageToGL(mUsage));
     mSize = size;
 }
 
-void BasicBuffer::updateData(size_t offset, size_t size, const void* data) {
+void AbstractBasicBuffer::updateData(size_t offset, size_t size, const void* data) {
     bind();
-
-    glGetError();
-    glBufferSubData(typeToGL(mType), offset, size, data);
-
-    if (glGetError() != GL_NO_ERROR)
-        throw Exception("Unable to update BasicBuffer data.");
+    glBufferSubData(typeToTarget(mType), offset, size, data);
 }
 
 }
