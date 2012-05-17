@@ -67,7 +67,7 @@ public:
 
 private:
     wzy::render::Program mProg;
-    std::shared_ptr<wzy::Entity> mEnt;
+    std::shared_ptr<wzy::AbstractEntity> mEnt;
 };
 
 int main()

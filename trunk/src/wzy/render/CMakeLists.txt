@@ -9,5 +9,6 @@ glew.hpp
 )
 
 target_link_libraries(wzyrender
+wzyutilities
 ${GLEW_LIBRARY}
 )

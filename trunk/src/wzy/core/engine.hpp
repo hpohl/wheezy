@@ -64,6 +64,8 @@ public:
 private:
     StateStack mStates;
     std::shared_ptr<SceneManager> mSceneManager;
+
+    void draw();
 };
 
 

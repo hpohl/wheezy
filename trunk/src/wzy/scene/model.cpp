@@ -2,27 +2,27 @@
 
 #include <algorithm>
 
+#include <wzy/utilities/exception.hpp>
+
 
 namespace wzy {
 
 Model::Model() :
     mVertices(new std::vector<Vector4f>),
     mColours(new std::vector<Vector4f>),
-    mIndices(new std::vector<Index>),
-    mRenderData(new render::Data) {
+    mIndices(new std::vector<Index>) {
 }
 
 Model::Model(const std::vector<Vector4f>& vertices,
              const std::vector<Vector4f>& colours) :
     mVertices(new std::vector<Vector4f>),
     mColours(new std::vector<Vector4f>),
-    mIndices(new std::vector<Index>),
-    mRenderData(new render::Data) {
+    mIndices(new std::vector<Index>) {
 
     if (vertices.size() != colours.size())
         throw Exception("Vertices and colours must have the same size in model creation.");
 
-    size_t size = vertices.size();
+    auto size = vertices.size();
 
     for (size_t i = 0; i < size; ++i) {
         Index idx;
@@ -50,7 +50,7 @@ Model::Model(const std::vector<Vector4f>& vertices,
 
 // ----------------------------------------
 void Model::update() {
-    std::vector<Vector4f> vertices;
+    /*std::vector<Vector4f> vertices;
     std::vector<Vector4f> colours;
 
     for (const Index& i : *mIndices) {
@@ -67,7 +67,7 @@ void Model::update() {
 
     auto cbo = std::make_shared<render::Data::ColourBuffer>();
     cbo->setData(colours);
-    mRenderData->setColours(cbo);
+    mRenderData->setColours(cbo);*/
 }
 
 }

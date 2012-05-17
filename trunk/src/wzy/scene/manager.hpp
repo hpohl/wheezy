@@ -14,17 +14,17 @@ class SceneManager {
 public:
     SceneManager();
 
-    const std::vector<std::shared_ptr<wzy::Entity> > entities() const
+    const std::vector<std::shared_ptr<AbstractEntity> > entities() const
     { return mEntities; }
 
     template <class EntityT, class... Args>
     const std::shared_ptr<EntityT> addEntity(Args&&... args);
 
-    void removeEntity(const std::shared_ptr<Entity>& ent)
+    void removeEntity(const std::shared_ptr<AbstractEntity>& ent)
     { std::remove(mEntities.begin(), mEntities.end(), ent); }
 
 private:
-    std::vector<std::shared_ptr<wzy::Entity> > mEntities;
+    std::vector<std::shared_ptr<wzy::AbstractEntity> > mEntities;
 };
 
 

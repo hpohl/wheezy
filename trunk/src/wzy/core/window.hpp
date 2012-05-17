@@ -45,7 +45,6 @@ public:
     int mouseX() const;
     int mouseY() const;
 
-    void jjj(int state, Window& win, MouseButton but);
 private:
     static bool mInitialised;
     static std::map<int, Window*> mWindows;

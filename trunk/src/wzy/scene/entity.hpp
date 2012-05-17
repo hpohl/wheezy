@@ -21,14 +21,20 @@ template <class T>
 struct IsEntity : public std::is_base_of<detail::BaseEntity, T> { };
 
 
-class Entity : public detail::BaseEntity, public Movable {
+class AbstractEntity : public detail::BaseEntity, public Movable {
 public:
-    Entity(const std::shared_ptr<Model>& model);
-
-    void draw() const;
+    AbstractEntity(const std::shared_ptr<Model>& model);
+    virtual ~AbstractEntity() = 0;
 
 private:
     std::shared_ptr<Model> mModel;
+};
+
+class Entity : public AbstractEntity {
+public:
+    template <class... Args>
+    Entity(Args&&... args) :
+        AbstractEntity(std::forward<Args>(args)...) { }
 };
 
 }

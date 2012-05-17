@@ -19,13 +19,10 @@ Engine::~Engine() {
 
 // -----------------------------------------------
 void Engine::frame() {
-    for (std::shared_ptr<State>& state : mStates) {
+    for (std::shared_ptr<State>& state : mStates)
         state->update();
-    }
 
-    for (const std::shared_ptr<Entity>& ent : mSceneManager->entities()) {
-        ent->draw();
-    }
+    update();
 }
 
 
@@ -33,6 +30,14 @@ void Engine::frame() {
 const Engine::ConstStateStack Engine::states() const {
     ConstStateStack ret(mStates.begin(), mStates.end());
     return ret;
+}
+
+
+// --------------------------------------
+void Engine::draw() {
+    for (const std::shared_ptr<AbstractEntity>& ent : mSceneManager->entities()) {
+
+    }
 }
 
 }

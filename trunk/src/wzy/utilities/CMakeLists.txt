@@ -1,4 +1,4 @@
-add_library(wzyutil SHARED
+add_library(wzyutilities SHARED
 exception.cpp exception.hpp
 general.cpp general.hpp
 mat.cpp mat.hpp matdef.hpp

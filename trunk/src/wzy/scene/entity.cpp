@@ -5,14 +5,11 @@
 
 namespace wzy {
 
-Entity::Entity(const std::shared_ptr<Model>& model) :
+AbstractEntity::AbstractEntity(const std::shared_ptr<Model>& model) :
     mModel(model) {
 }
 
-
-// ----------------------------------------------
-void Entity::draw() const {
-    mModel->renderData()->draw();
+AbstractEntity::~AbstractEntity() {
 }
 
 }

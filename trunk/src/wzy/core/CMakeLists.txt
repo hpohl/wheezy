@@ -5,6 +5,6 @@ window.cpp window.hpp
 )
 
 target_link_libraries(wzycore
-wzyrender wzyutil
+wzyrender wzyscene wzyutilities
 ${GLUT_LIBRARIES}
 )
