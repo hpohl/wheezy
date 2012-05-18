@@ -1,3 +1,3 @@
-add_library(wzyresource
+add_library(wzyresource SHARED
 manager.cpp manager.hpp
 )

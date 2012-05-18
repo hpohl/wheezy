@@ -1,6 +1,7 @@
 #include <wzy/core/engine.hpp>
 
 #include <wzy/render/render.hpp>
+#include <wzy/scene/model.hpp>
 
 
 namespace wzy {
@@ -9,7 +10,8 @@ Engine::Engine() :
     Singleton<Engine>(),
     Window(),
     mStates(),
-    mSceneManager(new SceneManager) {
+    mRootNode(new SceneNode) {
+
     render::init();
 }
 
@@ -22,7 +24,7 @@ void Engine::frame() {
     for (std::shared_ptr<State>& state : mStates)
         state->update();
 
-    update();
+    draw();
 }
 
 
@@ -35,8 +37,10 @@ const Engine::ConstStateStack Engine::states() const {
 
 // --------------------------------------
 void Engine::draw() {
-    for (const std::shared_ptr<AbstractEntity>& ent : mSceneManager->entities()) {
+    auto nodes = mRootNode->children();
 
+    for (const std::shared_ptr<AbstractSceneNode>& node : nodes) {
+        node->draw(mRootNode->transform());
     }
 }
 

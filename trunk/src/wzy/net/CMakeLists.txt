@@ -1,4 +1,4 @@
-add_library(wzynet
+add_library(wzynet SHARED
 server.cpp server.hpp
 )
 

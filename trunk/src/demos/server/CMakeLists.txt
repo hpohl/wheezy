@@ -1,7 +1,3 @@
-add_library(dserver
+add_executable(dserver
 main.cpp
-)
-
-target_link_libraries(dserver
-wzyded
 )

@@ -50,9 +50,14 @@ class TestingState : public wzy::State {
 public:
     TestingState() :
         mProg(),
-        mEnt(wzy::Engine::singleton().sceneManager()->addEntity<wzy::Entity>(std::make_shared<wzy::Model>(vertices, colours))) {
+        mEnt(std::make_shared<wzy::Entity>(std::make_shared<wzy::Model>(vertices, colours))) {
 
+        wzy::Engine::singleton().rootNode()->attach(mEnt);
+
+        wzy::Matrix4f mat;
         mProg.use();
+
+        mProg.uniform(mat, "wzyModelViewMatrix");
     }
 
     void update() {

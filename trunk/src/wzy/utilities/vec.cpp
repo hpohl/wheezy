@@ -1,4 +1,4 @@
-#include <wzy/utilities/vecdef.hpp>
+#include <wzy/utilities/vec/vecdef.hpp>
 
 namespace wzy {
 

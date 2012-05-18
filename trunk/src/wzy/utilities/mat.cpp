@@ -1,4 +1,4 @@
-#include <wzy/utilities/matdef.hpp>
+#include <wzy/utilities/mat/matdef.hpp>
 
 namespace wzy {
 

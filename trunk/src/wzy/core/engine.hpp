@@ -7,7 +7,7 @@
 
 #include <wzy/core/state.hpp>
 #include <wzy/core/window.hpp>
-#include <wzy/scene/manager.hpp>
+#include <wzy/scene/node.hpp>
 #include <wzy/utilities/singleton.hpp>
 
 
@@ -57,13 +57,14 @@ public:
     }
 
 
-    // ------------------------------------------------------------
-    const std::shared_ptr<SceneManager> sceneManager()
-    { return mSceneManager; }
+    // -----------------------------------
+    std::shared_ptr<SceneNode> rootNode()
+    { return mRootNode; }
+
 
 private:
     StateStack mStates;
-    std::shared_ptr<SceneManager> mSceneManager;
+    std::shared_ptr<SceneNode> mRootNode;
 
     void draw();
 };

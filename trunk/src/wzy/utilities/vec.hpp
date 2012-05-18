@@ -1,7 +1,7 @@
 #ifndef WZY_UTIL_VEC_HPP
 #define WZY_UTIL_VEC_HPP
 
-#include <wzy/utilities/vecdef.hpp>
+#include <wzy/utilities/vec/vecdef.hpp>
 
 
 namespace wzy {
