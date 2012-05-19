@@ -7,7 +7,10 @@ helpers/operations.hpp
 
 mat.cpp mat.hpp
 mat/matdef.hpp
+mat/matfwd.hpp
 mat/functions/general.hpp
+mat/functions/math.hpp
+mat/operators/math.hpp
 
 vec.cpp vec.hpp
 vec/aliases.hpp

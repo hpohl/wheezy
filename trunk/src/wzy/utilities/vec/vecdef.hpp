@@ -19,12 +19,12 @@ namespace wzy {
 
 namespace detail {
 namespace vec {
-struct BaseVec { };
+struct VecID { };
 }
 }
 
 template <int n, class T>
-class Vector : public detail::vec::BaseVec, public detail::vec::AccessImpl<n, T, n - 1> {
+class Vector : public detail::vec::VecID, public detail::vec::AccessImpl<n, T, n - 1> {
 public:
     Vector() :
         mData {0} { }

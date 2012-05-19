@@ -9,8 +9,8 @@ namespace wzy {
 
 class Movable {
 public:
-    Movable(const Vector3f& position = Vector3f(),
-            const Vector3f& scale = Vector3f()) :
+    Movable(const Vector3f& position = Vector3f(0.0, 0.0, 0.0),
+            const Vector3f& scale = Vector3f(1.0, 1.0, 1.0)) :
         mPosition(position),
         mScale(scale) { }
 

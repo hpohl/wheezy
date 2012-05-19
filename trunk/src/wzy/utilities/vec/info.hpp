@@ -8,12 +8,12 @@ namespace wzy {
 
 namespace detail {
 namespace vec {
-struct BaseVec;
+struct VecID;
 }
 }
 
 template <class T>
-struct IsVec : public std::is_base_of<detail::vec::BaseVec, T> { };
+struct IsVec : public std::is_base_of<detail::vec::VecID, T> { };
 
 }
 

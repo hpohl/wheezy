@@ -1,5 +1,9 @@
-#include <wzy/utilities/vec.hpp>
+#include <wzy/utilities/mat.hpp>
 
 int main() {
+    /*wzy::Matrix4f m(1.0, 2.0, 3.0,
+                    4.0, 5.0, 6.0,
+                    7.0, 8.0, 9.0);*/
+
     return 0;
 }

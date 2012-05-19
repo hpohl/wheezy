@@ -16,7 +16,7 @@ namespace vec {
 
 // Forwards
 template <int begin, int nv, class Tv, int nav, class Tav, class... Args>
-void assign(Vector<nv, Tv>& v, Vector<nav, Tav>&& av, Args&&... args);
+void assign(Vector<nv, Tv>& v, const Vector<nav, Tav>& av, const Args&... args);
 
 template <int begin, int n, class T>
 void assign(Vector<n, T>& v) {
@@ -24,18 +24,18 @@ void assign(Vector<n, T>& v) {
 }
 
 template <int begin, int n, class T, class First, class... Args>
-typename std::enable_if<!IsVec<typename std::remove_reference<First>::type>::value>::type
-assign(Vector<n, T>& v, First&& first, Args&&... args) {
+typename std::enable_if<!IsVec<First>::value>::type
+assign(Vector<n, T>& v, const First& first, const Args&... args) {
     static_assert(begin < n, "Too many assignment parameters.");
     v[begin] = first;
-    detail::vec::assign<begin + 1>(v, std::forward<Args>(args)...);
+    detail::vec::assign<begin + 1>(v, args...);
 }
 
 template <int begin, int nv, class Tv, int nav, class Tav, class... Args>
-void assign(Vector<nv, Tv>& v, Vector<nav, Tav>&& av, Args&&... args) {
+void assign(Vector<nv, Tv>& v, const Vector<nav, Tav>& av, const Args&... args) {
     static_assert((begin + nav) <= nv, "Too many assignment parameters.");
     operate<op::Assign, nav>(v.data() + begin, av);
-    detail::vec::assign<begin + nav>(v, std::forward<Args>(args)...);
+    detail::vec::assign<begin + nav>(v, args...);
 }
 
 }

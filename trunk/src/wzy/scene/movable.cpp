@@ -9,7 +9,7 @@ Movable::~Movable() {
 // ------------------------------
 const Matrix4f Movable::transform() const {
     Matrix4f m;
-    m.translate(mPosition);
+    translate(m, mPosition);
     return m;
 }
 
