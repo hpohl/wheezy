@@ -1,9 +1,16 @@
 #include <wzy/utilities/mat.hpp>
 
+
 int main() {
-    /*wzy::Matrix4f m(1.0, 2.0, 3.0,
-                    4.0, 5.0, 6.0,
-                    7.0, 8.0, 9.0);*/
+    wzy::Matrix3f m(1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
+
+    wzy::Matrix3f n(m);
+
+    wzy::print(m * n);
+    std::cout << std::endl;
+    wzy::print(n);
 
     return 0;
 }

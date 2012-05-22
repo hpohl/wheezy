@@ -4,29 +4,40 @@
 #include <wzy/utilities/helpers/operations.hpp>
 #include <wzy/utilities/mat/matfwd.hpp>
 #include <wzy/utilities/tmp.hpp>
+#include <wzy/utilities/vec.hpp>
 
 
 namespace wzy {
 
-template <int colslhs, int rowslhs, class Tlhs,
-          int colsrhs, int rowsrhs, class Trhs>
-const Matrix<tmp::Biggest<colslhs, colsrhs>::value, tmp::Biggest<rowslhs, rowsrhs>::value, decltype(std::declval<Tlhs>() * std::declval<Trhs>())>
-operator*(const Matrix<colslhs, rowslhs, Tlhs>& lhs, const Matrix<colsrhs, rowsrhs, Trhs>& rhs) {
+template <int rowslhs, int colslhs, class Tlhs,
+          int rowsrhs, int colsrhs, class Trhs>
+const Matrix<tmp::Highest<rowslhs, rowsrhs>::value, tmp::Highest<colslhs, colsrhs>::value,
+decltype(std::declval<Tlhs>() * std::declval<Trhs>())>
+operator*(const Matrix<rowslhs, colslhs, Tlhs>& lhs, const Matrix<rowsrhs, colsrhs, Trhs>& rhs) {
 
-    static_assert(colslhs == rowsrhs, "Number of coloums of the left and rows of the right have to be equal.");
     static_assert(rowslhs == colsrhs, "Number of rows of the left and coloumns of the right have to be equal.");
+    static_assert(colslhs == rowsrhs, "Number of coloums of the left and rows of the right have to be equal.");
 
-    constexpr int maxcols = tmp::Biggest<colslhs, colsrhs>::value;
-    constexpr int maxrows = tmp::Biggest<rowslhs, rowsrhs>::value;
+    constexpr int maxcols = tmp::Highest<colslhs, colsrhs>::value;
+    constexpr int maxrows = tmp::Highest<rowslhs, rowsrhs>::value;
 
-    Matrix<maxcols, maxrows, typename std::common_type<Tlhs, Trhs>::type> m;
+    typedef decltype(std::declval<Tlhs>() * std::declval<Trhs>()) RetT;
 
-    for (int col = 0; col < maxcols; ++col) {
-        for (int row = 0; row < maxrows; ++row) {
+    Matrix<maxcols, maxrows, RetT> m;
 
-        }
-    }
+    for (int row = 0; row < maxrows; ++row)
+        for (int col = 0; col < maxcols; ++col)
+            m[row][col] = dot(lhs[row], coloumn(rhs, col));
+
+
+    return m;
 }
+
+
+template <int rowslhs, int colslhs, class Tlhs,
+          int rowsrhs, int colsrhs, class Trhs>
+Matrix<rowslhs, colslhs, Tlhs>& operator*=(Matrix<rowslhs, colslhs, Tlhs>& lhs, const Matrix<rowsrhs, colsrhs, Trhs>& rhs)
+{ lhs = lhs * rhs; return lhs; }
 
 }
 

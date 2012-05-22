@@ -19,10 +19,9 @@ AbstractEntity::~AbstractEntity() {
 
 // -------------------------------------------------
 void AbstractEntity::draw(const Matrix4f& transform) {
-
     AbstractSceneNode::draw(transform);
     mMaterial->use();
-    mMaterial->program()->uniform(this->transform(), "wzyModelViewMatrix");
+    mMaterial->program()->uniform("wzyModelViewMatrix", this->transform());
     mModel->renderData()->draw();
 }
 

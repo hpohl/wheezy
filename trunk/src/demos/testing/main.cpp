@@ -57,7 +57,7 @@ public:
         wzy::Matrix4f mat;
         mProg.use();
 
-        mProg.uniform(mat, "wzyModelViewMatrix");
+        mProg.uniform("wzyModelViewMatrix", mat);
     }
 
     void update() {

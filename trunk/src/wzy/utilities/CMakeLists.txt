@@ -6,6 +6,7 @@ helpers/assign.hpp
 helpers/operations.hpp
 
 mat.cpp mat.hpp
+mat/info.hpp
 mat/matdef.hpp
 mat/matfwd.hpp
 mat/functions/general.hpp

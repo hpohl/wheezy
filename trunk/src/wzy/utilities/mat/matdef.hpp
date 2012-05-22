@@ -14,8 +14,14 @@
 
 namespace wzy {
 
+namespace detail {
+namespace mat {
+struct MatID { };
+}
+}
+
 template <int rows, int cols, class T>
-class Matrix {
+class Matrix : public detail::mat::MatID {
 public:
     static_assert(rows > 1 && cols > 1, "A matrix has to have at least 2 rows and cols.");
 
@@ -27,8 +33,8 @@ public:
         };
 
         struct Zero {
-            template <int c, int r, class Tm>
-            static void go(Matrix<c, r, Tm>& m)
+            template <int r, int c, class Tm>
+            static void go(Matrix<r, c, Tm>& m)
             { zero(m); }
         };
 
@@ -37,6 +43,15 @@ public:
 
     Matrix()
     { GetIniter::type::go(*this); }
+
+    template <class... Args>
+    Matrix(Args&&... args)
+    { assign(*this, std::forward<Args>(args)...); }
+
+    template <class... Args>
+    Matrix& operator=(Args&&... args)
+    { assign(*this, std::forward<Args>(args)...); return *this; }
+
 
     Vector<rows, T>& operator[](size_t i)
     { assert(i < rows); return mData[i]; }
@@ -63,6 +78,8 @@ template <class T>
 using Matrix4 = Matrix<4, 4, T>;
 
 
+typedef Matrix2<float> Matrix2f;
+typedef Matrix3<float> Matrix3f;
 typedef Matrix4<float> Matrix4f;
 
 }

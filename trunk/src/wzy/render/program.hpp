@@ -48,7 +48,7 @@ public:
 
 
     template <int cols, int rows>
-    void uniform(const Matrix<cols, rows, float>& m, const std::string& name)
+    void uniform(const std::string& name, const Matrix<cols, rows, float>& m)
     { uniform(cols, rows, m.data(), name); }
 
 private:
