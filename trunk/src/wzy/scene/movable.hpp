@@ -29,7 +29,7 @@ public:
     { mScale = scale; }
 
 
-    const Matrix4f transform() const;
+    const Matrix4f transformation() const;
 
 private:
     Vector3f mPosition;

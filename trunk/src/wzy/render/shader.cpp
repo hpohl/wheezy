@@ -70,6 +70,7 @@ void BasicShader::parseSource(std::string& src) {
         }
     }
 
+    src.insert(0, "layout(row_major) uniform;");
     src.insert(0, "#extension GL_ARB_shading_language_420pack: enable\n");
     src.insert(0, "#version 420\n");
 }

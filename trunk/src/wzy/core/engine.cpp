@@ -40,7 +40,7 @@ void Engine::draw() {
     auto nodes = mRootNode->children();
 
     for (const std::shared_ptr<AbstractSceneNode>& node : nodes) {
-        node->draw(mRootNode->transform());
+        node->draw(mRootNode->transformation());
     }
 }
 

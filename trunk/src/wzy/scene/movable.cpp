@@ -7,9 +7,10 @@ Movable::~Movable() {
 
 
 // ------------------------------
-const Matrix4f Movable::transform() const {
+const Matrix4f Movable::transformation() const {
     Matrix4f m;
-    translate(m, mPosition);
+    wzy::translate(m, mPosition);
+    wzy::scale(m, mScale);
     return m;
 }
 

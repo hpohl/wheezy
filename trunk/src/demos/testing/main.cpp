@@ -49,15 +49,10 @@ std::vector<wzy::Vector4f> colours = {
 class TestingState : public wzy::State {
 public:
     TestingState() :
-        mProg(),
         mEnt(std::make_shared<wzy::Entity>(std::make_shared<wzy::Model>(vertices, colours))) {
-
         wzy::Engine::singleton().rootNode()->attach(mEnt);
 
-        wzy::Matrix4f mat;
-        mProg.use();
-
-        mProg.uniform("wzyModelViewMatrix", mat);
+        mEnt->setPosition({1.0, 0.0, 0.0});
     }
 
     void update() {
@@ -71,7 +66,6 @@ public:
     }
 
 private:
-    wzy::render::Program mProg;
     std::shared_ptr<wzy::AbstractEntity> mEnt;
 };
 
