@@ -10,9 +10,16 @@ Engine::Engine() :
     Singleton<Engine>(),
     Window(),
     mStates(),
-    mRootNode(new SceneNode) {
+    mRootNode(new SceneNode),
+    mRootGUIObject(new gui::Object(gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
+                                   gui::UDim({ 0.0, 0.0 }, { 0, 0 }))),
+    mRootView() {
 
     render::init();
+
+    mRootView.reset(new gui::View(gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
+                                  gui::UDim({ 1.0, 1.0 }, { 0, 0 })));
+    mRootGUIObject->attach(mRootView);
 }
 
 Engine::~Engine() {
@@ -23,7 +30,6 @@ Engine::~Engine() {
 void Engine::frame() {
     for (std::shared_ptr<State>& state : mStates)
         state->update();
-
     draw();
 }
 
@@ -37,11 +43,9 @@ const Engine::ConstStateStack Engine::states() const {
 
 // --------------------------------------
 void Engine::draw() {
-    auto nodes = mRootNode->children();
-
-    for (const std::shared_ptr<AbstractSceneNode>& node : nodes) {
-        node->draw(mRootNode->transformation());
-    }
+    render::FrameBuffer::useDefault();
+    render::clear();
+    mRootGUIObject->draw(gui::UDim({ 0.0, 0.0 }, { 0, 0 }), { 1.0, 1.0 });
 }
 
 }

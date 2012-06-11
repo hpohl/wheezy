@@ -6,6 +6,11 @@ namespace render {
 
 void init();
 
+void flush();
+void finish();
+
+void clear();
+
 }
 }
 

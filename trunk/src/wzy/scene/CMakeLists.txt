@@ -1,4 +1,5 @@
 add_library(wzyscene SHARED
+camera.cpp camera.hpp
 entity.cpp entity.hpp
 material.cpp material.hpp
 model.cpp model.hpp

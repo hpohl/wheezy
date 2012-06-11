@@ -35,7 +35,7 @@ bool Program::attached(const std::shared_ptr<BasicShader>& shader) const {
 void Program::link() const {
     glLinkProgram(mName);
     if (!linked())
-        throw Exception("Unable to link program.");
+        throw Exception("Unable to link program. Log:\n" + infoLog());
 }
 
 bool Program::linked() const {
@@ -76,6 +76,49 @@ void Program::setDefault() {
     link();
 }
 
+void Program::attach(const std::shared_ptr<BasicShader>& shader) {
+    glAttachShader(mName, shader->name());
+}
+
+void Program::detach(const std::shared_ptr<BasicShader>& shader) {
+    glDetachShader(mName, shader->name());
+}
+
+bool Program::attachedGL(const std::shared_ptr<BasicShader>& shader) const {
+    GLint num = 0;
+    glGetProgramiv(GL_ATTACHED_SHADERS, shader->name(), &num);
+    std::unique_ptr<GLuint[]> names(new GLuint[num]);
+    glGetAttachedShaders(mName, num, nullptr, names.get());
+
+    for (int i = 0; i < num; ++i)
+        if (shader->name() == names[i])
+            return true;
+
+    return false;
+}
+
+void Program::uniform(const std::string& name, int v) {
+    validate();
+
+    auto loc = glGetUniformLocation(mName, name.c_str());
+    if (loc == -1)
+        throw Exception("Invalid uniform location for " + name + ".");
+
+    glUniform1i(loc, v);
+}
+
+void Program::uniform(const std::string& name, const std::vector<int>& v) {
+    validate();
+
+    auto loc = glGetUniformLocation(mName, name.c_str());
+    if (loc == -1)
+        throw Exception("Invalid uniform location for " + name + ".");
+
+    glUniform1iv(loc, v.size(), v.data());
+}
+
+
+// -------------------------------------------
 void Program::uniform(int cols, int rows, const float* val, const std::string& name) {
     validate();
 
@@ -118,29 +161,6 @@ void Program::uniform(int cols, int rows, const float* val, const std::string& n
         throw Exception("Matrix uniform " + name + " not found in program.");
 
     func(loc, 1, GL_FALSE, val);
-}
-
-
-// ---------------------------------------------------
-void Program::attach(const std::shared_ptr<BasicShader>& shader) {
-    glAttachShader(mName, shader->name());
-}
-
-void Program::detach(const std::shared_ptr<BasicShader>& shader) {
-    glDetachShader(mName, shader->name());
-}
-
-bool Program::attachedGL(const std::shared_ptr<BasicShader>& shader) const {
-    GLint num = 0;
-    glGetProgramiv(GL_ATTACHED_SHADERS, shader->name(), &num);
-    std::unique_ptr<GLuint[]> names(new GLuint[num]);
-    glGetAttachedShaders(mName, num, nullptr, names.get());
-
-    for (int i = 0; i < num; ++i)
-        if (shader->name() == names[i])
-            return true;
-
-    return false;
 }
 
 }

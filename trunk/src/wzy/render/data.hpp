@@ -17,6 +17,9 @@ public:
     typedef ArrayBuffer<Vector2f, AbstractBasicBuffer::Usage::StaticDraw> TexCoordBuffer;
     typedef ArrayBuffer<Vector4f, AbstractBasicBuffer::Usage::StaticDraw> ColourBuffer;
 
+    static const std::shared_ptr<Data> quad();
+
+
     Data();
     Data(const std::shared_ptr<const VertexBuffer>& vertices,
          const std::shared_ptr<const ColourBuffer>& colours = std::shared_ptr<const ColourBuffer>(),

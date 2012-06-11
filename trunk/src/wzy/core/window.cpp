@@ -26,6 +26,7 @@ Window::MouseButton glut2MouseButton(int button) {
 
 
 // -----------------------------------------------
+Vector2i Window::defaultSize = {512, 512};
 bool Window::mInitialised = false;
 std::map<int, Window*> Window::mWindows;
 
@@ -181,6 +182,7 @@ Window::Window() :
     }
 
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowSize(defaultSize.x(), defaultSize.y());
     mId = glutCreateWindow("wzy::Window");
 
     if (!mId)

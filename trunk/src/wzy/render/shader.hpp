@@ -19,9 +19,9 @@ public:
     };
 
     struct BuiltIn {
-        std::string specifier;
+        std::string layout;
+        std::string storage;
         std::string type;
-        int location;
     };
 
     typedef std::map<std::string, BuiltIn> BuiltIns;

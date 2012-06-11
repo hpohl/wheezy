@@ -1,5 +1,6 @@
 #include <wzy/render/shader.hpp>
 
+#include <iostream>
 #include <memory>
 #include <sstream>
 
@@ -30,13 +31,14 @@ GLenum typeToGL(BasicShader::Type t) {
 // ---------------------------------------
 BasicShader::BuiltIns BasicShader::mBuiltIns = {
     // Vector data
-    {"wzyPosition", {"in", "vec4", 10}},
-    {"wzyTexCoord", {"in", "vec2", 11}},
-    {"wzyColor", {"in", "vec4", 12}},
+    {"wzyPosition", {"layout(location = 10)", "in", "vec4"}},
+    {"wzyColour", {"layout(location = 11)", "in", "vec4"}},
+    {"wzyTexCoord", {"layout(location = 12)", "in", "vec2"}},
 
     // Uniforms
-    {"wzyModelViewMatrix", {"uniform", "mat4", -1}},
-    {"wzyProjectionMatrix", {"uniform", "mat4", -1}}
+    {"wzyModelViewMatrix", {"", "uniform", "mat4"}},
+    {"wzyProjectionMatrix", {"", "uniform", "mat4"}},
+    {"wzyTexture2D", {"", "uniform", "sampler2D"}}
 };
 
 
@@ -58,19 +60,13 @@ void BasicShader::parseSource(std::string& src) {
         auto builtin = p.second;
 
         if (src.find(name) != std::string::npos) {
-            std::stringstream ss;
-
-            if (builtin.specifier == "in")
-                ss << "layout(location=" << builtin.location << ") ";
-
-            ss << builtin.specifier << " " << builtin.type << " " << name << ";" << std::endl;
-
-            std::string addition(ss.str());
+            auto addition = builtin.layout + " " + builtin.storage +
+                    " " + builtin.type + " " + name + ";\n";
             src.insert(src.begin(), addition.begin(), addition.end());
         }
     }
 
-    src.insert(0, "layout(row_major) uniform;");
+    src.insert(0, "layout(row_major) uniform;\n");
     src.insert(0, "#extension GL_ARB_shading_language_420pack: enable\n");
     src.insert(0, "#version 420\n");
 }

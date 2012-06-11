@@ -20,10 +20,13 @@ public:
         Left, Middle, Right
     };
 
+    static Vector2i defaultSize;
+
     static void execute();
     static void update();
     static Key asciiToKey(unsigned char key);
     static unsigned char keyToAscii(Key k);
+    static Window& currentWindow();
 
     Window();
     virtual ~Window() = 0;
@@ -49,7 +52,6 @@ private:
     static bool mInitialised;
     static std::map<int, Window*> mWindows;
 
-    static Window& currentWindow();
     static void displayFunc();
     static void reshapeFunc(int width, int height);
     static void keyboardFunc(unsigned char key, int, int);

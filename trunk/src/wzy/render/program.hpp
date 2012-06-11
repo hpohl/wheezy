@@ -47,6 +47,9 @@ public:
     void setDefault();
 
 
+    void uniform(const std::string& name, int v);
+    void uniform(const std::string& name, const std::vector<int>& v);
+
     template <int cols, int rows>
     void uniform(const std::string& name, const Matrix<cols, rows, float>& m)
     { uniform(cols, rows, m.data(), name); }

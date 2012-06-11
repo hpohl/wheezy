@@ -7,6 +7,7 @@
 
 #include <wzy/core/state.hpp>
 #include <wzy/core/window.hpp>
+#include <wzy/gui/view.hpp>
 #include <wzy/scene/node.hpp>
 #include <wzy/utilities/singleton.hpp>
 
@@ -61,10 +62,18 @@ public:
     std::shared_ptr<SceneNode> rootNode()
     { return mRootNode; }
 
+    std::shared_ptr<gui::Object> rootGUIObject()
+    { return mRootGUIObject; }
+
+    std::shared_ptr<gui::View> rootView()
+    { return mRootView; }
+
 
 private:
     StateStack mStates;
     std::shared_ptr<SceneNode> mRootNode;
+    std::shared_ptr<gui::Object> mRootGUIObject;
+    std::shared_ptr<gui::View> mRootView;
 
     void draw();
 };
@@ -72,7 +81,7 @@ private:
 
 template <class StateType>
 bool Engine::stateInStack() const {
-    for (StateStack::value_type& val : mStates)
+    for (auto val : mStates)
         if (typeid(*val) == typeid(*val))
             return true;
     return false;

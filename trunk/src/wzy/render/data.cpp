@@ -8,6 +8,43 @@
 namespace wzy {
 namespace render {
 
+const std::shared_ptr<Data> Data::quad() {
+    static std::vector<Vector4f> vertices = {
+        { -0.5, 0.5, 0.0, 1.0 },
+        { 0.5, 0.5, 0.0, 1.0 },
+        { 0.5, -0.5, 0.0, 1.0 },
+
+        { -0.5, 0.5, 0.0, 1.0 },
+        { -0.5, -0.5, 0.0, 1.0 },
+        { 0.5, -0.5, 0.0, 1.0 }
+    };
+
+    static std::vector<Vector2f> texCoords = {
+        { 0.0, 1.0 },
+        { 1.0, 1.0 },
+        { 1.0, 0.0 },
+
+        { 0.0, 1.0 },
+        { 0.0, 0.0 },
+        { 1.0, 0.0 }
+    };
+
+    auto data = std::make_shared<Data>();
+
+    auto vertexBuffer = std::make_shared<VertexBuffer>();
+    vertexBuffer->setData(vertices);
+
+    auto texCoordBuffer = std::make_shared<TexCoordBuffer>();
+    texCoordBuffer->setData(texCoords);
+
+    data->setVertices(vertexBuffer);
+    data->setTexCoords(texCoordBuffer);
+
+    return data;
+}
+
+
+// ------------------------------------------
 Data::Data() :
     mName(0),
     mVertexBuffer(),
@@ -31,7 +68,6 @@ Data::~Data() {
     glDeleteVertexArrays(1, &mName);
 }
 
-
 // -----------------------------------------
 void Data::bind() const {
     glBindVertexArray(mName);
@@ -42,19 +78,16 @@ void Data::set() const {
 
     if (mVertexBuffer) {
         mVertexBuffer->bind();
-        auto loc = BasicShader::findBuiltIn("wzyPosition").location;
-        glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(loc);
-    } if (mTexCoordBuffer) {
-        mTexCoordBuffer->bind();
-        auto loc = BasicShader::findBuiltIn("wzyTexCoord").location;
-        glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(loc);
+        glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(10);
     } if (mColourBuffer) {
         mColourBuffer->bind();
-        auto loc = BasicShader::findBuiltIn("wzyColor").location;
-        glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(loc);
+        glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(11);
+    } if (mTexCoordBuffer) {
+        mTexCoordBuffer->bind();
+        glVertexAttribPointer(12, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(12);
     }
 }
 

@@ -4,5 +4,5 @@ main.cpp
 
 target_link_libraries(dtesting
 wzycore wzymedia wzyscene
-GL
+GL GLU
 )

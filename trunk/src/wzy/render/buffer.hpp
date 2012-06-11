@@ -18,6 +18,7 @@ class AbstractBasicBuffer : public NonCopyable {
 public:
     enum class Type {
         Array,
+        ElementArray,
         Uniform
     };
 
@@ -81,6 +82,8 @@ public:
         AbstractBuffer<ttype, usage>(std::forward<Args>(args)...) { }
 };
 
+
+// ---------------------------------------------------
 template <class T, AbstractBasicBuffer::Usage usage>
 class ArrayBuffer : public AbstractBuffer<AbstractBasicBuffer::Type::Array, usage> {
 public:

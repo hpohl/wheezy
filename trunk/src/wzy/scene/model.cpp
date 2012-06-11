@@ -8,43 +8,25 @@
 namespace wzy {
 
 Model::Model() :
+    mName(),
+    mChildren(new std::vector<std::shared_ptr<Model> >),
     mVertices(new std::vector<Vector4f>),
     mColours(new std::vector<Vector4f>),
-    mIndices(new std::vector<Index>),
+    mTexCoords(new std::vector<Vector2f>),
+    mMaterial(new Material),
     mRenderData(new render::Data) {
 }
 
-Model::Model(const std::vector<Vector4f>& vertices,
-             const std::vector<Vector4f>& colours) :
-    mVertices(new std::vector<Vector4f>),
-    mColours(new std::vector<Vector4f>),
-    mIndices(new std::vector<Index>),
+Model::Model(const VerticesPtr& vertices,
+             const ColoursPtr& colours,
+             const TexCoordsPtr& texCoords) :
+    mName(),
+    mChildren(new std::vector<std::shared_ptr<Model> >),
+    mVertices(vertices),
+    mColours(colours),
+    mTexCoords(texCoords),
+    mMaterial(new Material),
     mRenderData(new render::Data) {
-
-    if (vertices.size() != colours.size())
-        throw Exception("Vertices and colours must have the same size in model creation.");
-
-    auto size = vertices.size();
-
-    for (size_t i = 0; i < size; ++i) {
-        Index idx;
-
-        auto vit = std::find(mVertices->begin(), mVertices->end(), vertices[i]);
-        if (vit == mVertices->end()) {
-            mVertices->push_back(vertices[i]);
-            idx.vertex = mVertices->size() - 1;
-        } else
-            idx.vertex = vit - mVertices->begin();
-
-        auto cit = std::find(mColours->begin(), mColours->end(), colours[i]);
-        if (cit == mColours->end()) {
-            mColours->push_back(colours[i]);
-            idx.colour = mColours->size() - 1;
-        } else
-            idx.colour = cit - mColours->begin();
-
-        mIndices->push_back(idx);
-    }
 
     update();
 }
@@ -52,24 +34,21 @@ Model::Model(const std::vector<Vector4f>& vertices,
 
 // ----------------------------------------
 void Model::update() {
-    std::vector<Vector4f> vertices;
-    std::vector<Vector4f> colours;
-
-    for (const Index& i : *mIndices) {
-        assert(i.vertex < mVertices->size());
-        vertices.push_back((*mVertices)[i.vertex]);
-
-        assert(i.colour < mVertices->size());
-        colours.push_back((*mColours)[i.colour]);
-    }
-
     auto vbo = std::make_shared<render::Data::VertexBuffer>();
-    vbo->setData(vertices);
+    vbo->setData(*mVertices);
     mRenderData->setVertices(vbo);
 
-    auto cbo = std::make_shared<render::Data::ColourBuffer>();
-    cbo->setData(colours);
-    mRenderData->setColours(cbo);
+    if (!mColours->empty()) {
+        auto cbo = std::make_shared<render::Data::ColourBuffer>();
+        cbo->setData(*mColours);
+        mRenderData->setColours(cbo);
+    }
+
+    if (!mTexCoords->empty()) {
+        auto tcbo = std::make_shared<render::Data::TexCoordBuffer>();
+        tcbo->setData(*mTexCoords);
+        mRenderData->setTexCoords(tcbo);
+    }
 }
 
 }

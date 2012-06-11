@@ -10,39 +10,117 @@
 namespace wzy {
 namespace render {
 
-class BasicTexture : NonCopyable {
+class BasicTexture : public NonCopyable {
 public:
     enum class Type {
-        OneD,
-        TwoD,
-        ThreeD
+        Tex1D,
+        Tex2D,
+        Tex3D,
+        Array1D,
+        Array2D,
+        Array3D,
+        Rectangle,
+        CubeMap,
+        Multisample,
+        MutlisampleArray
     };
 
-    template <Type ttype>
-    friend class Texture;
+    enum class BaseInternalFormat {
+        R,
+        RG,
+        RGB,
+        RGBA
+    };
+
+    enum class SizedInternalFormat {
+        RGBA8
+    };
+
+    enum class Format {
+        R,
+        RG,
+        RGB,
+        BGR,
+        RGBA,
+        BGRA
+    };
+
+    enum class DataType {
+        Byte,
+        UByte
+    };
+
+    enum class Target2D {
+        Tex2D
+    };
+
+    enum class MinFilter {
+        Nearest,
+        Linear,
+        LinearMipmapLinear
+    };
+
+    enum class MagFilter {
+        Nearest,
+        Linear
+    };
+
+    enum class Wrap {
+        ClampToEdge,
+        ClampToBorder,
+        MirroredRepeat,
+        Repeat
+    };
 
 
-    static void activateSlot(int s);
+    static void activateSlot(unsigned int i);
 
     BasicTexture(Type t);
     virtual ~BasicTexture() = 0;
 
-    unsigned int name() const
-    { return mName; }
-
     Type type() const
     { return mType; }
+
+    unsigned int name() const
+    { return mName; }
 
     void bind() const;
     bool bound() const;
 
-    void setData(const Vector2i& size, int bpp, const unsigned char* data);
+    void reserve(SizedInternalFormat internalFormat, const Vector2i& size, Target2D target = Target2D::Tex2D);
+
+    void setImage(BaseInternalFormat internalFormat, const Vector2i& size,
+                  Format format, DataType dt, const void* data, Target2D target = Target2D::Tex2D);
+
+    void setMinFilter(const MinFilter& filter);
+    void setMagFilter(const MagFilter& filter);
+
+    void setSWrap(const Wrap& wrap);
+    void setTWrap(const Wrap& wrap);
+
+    const MinFilter minFilter() const
+    { return mMinFilter; }
+
+    const MagFilter magFilter() const
+    { return mMagFilter; }
+
+    const Wrap sWrap() const
+    { return mSWrap; }
+
+    const Wrap tWrap() const
+    { return mTWrap; }
 
 private:
-    unsigned int mName;
     const Type mType;
+    MinFilter mMinFilter;
+    MagFilter mMagFilter;
+    Wrap mSWrap;
+    Wrap mTWrap;
+    unsigned int mName;
 };
 
+
+// --------------------------------------------------
 template <BasicTexture::Type ttype>
 class Texture : public BasicTexture {
 public:
@@ -51,10 +129,10 @@ public:
         BasicTexture(ttype, std::forward<Args>(args)...) { }
 };
 
-typedef Texture<BasicTexture::Type::TwoD> Texture2D;
-
+typedef Texture<BasicTexture::Type::Tex2D> Texture2D;
 
 }
 }
+
 
 #endif

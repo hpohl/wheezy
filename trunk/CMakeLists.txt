@@ -17,7 +17,7 @@ project(wheezy)
 add_definitions(-std=c++11 -Wall)
 
 # Use GCC 4.8
-set(CMAKE_CXX_COMPILER g++-4.8)
+#set(CMAKE_CXX_COMPILER g++)
 
 # Use FreeImage
 find_package(FreeImage REQUIRED)
