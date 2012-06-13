@@ -39,6 +39,9 @@ public:
     void setPosition(const UDim& position)
     { mPosition = position; }
 
+    void setSize(const UDim& size)
+    { mSize = size; }
+
     void scale(const Vector2f& scale)
     { mScale = scale; }
 

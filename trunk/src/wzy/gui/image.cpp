@@ -1,43 +1,33 @@
-#include <wzy/gui/view.hpp>
-
-#include <wzy/core/engine.hpp>
-#include <wzy/render/render.hpp>
-#include <wzy/render/shader.hpp>
-#include <wzy/utilities/general.hpp>
+#include <wzy/gui/image.hpp>
 
 
 namespace wzy {
 namespace gui {
 
-View::View(const UDim& position,
-           const UDim& size) :
+Image::Image(const UDim& position,
+             const UDim& size,
+             const std::shared_ptr<render::Texture2D>& texture) :
     Object(position, size),
-    mFB(new render::FrameBuffer(size.currentAbs())),
     mRenderData(render::Data::quad()),
+    mTexture(texture),
     mMaterial(new Material) {
 
-    mMaterial->textures()->push_back(mFB->colourAttachment(0));
+    mMaterial->textures()->push_back(mTexture);
+}
+
+Image::~Image() {
 }
 
 
-// ------------------------------------
-void View::draw(const UDim& position,
-                const Vector2f& scale) {
+// ----------------------------------
+void Image::draw(const UDim& position, const Vector2f& scale) {
     Object::draw(position, scale);
-
-    mFB->bind();
-    render::clear();
-
-    Engine::singleton().rootNode()->draw(Engine::singleton().rootNode()->transformation());
-
-    render::FrameBuffer::useDefault();
 
     Matrix4f proj;
     orthographic(proj, 0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
     Matrix4f mdlview;
 
     auto sizeToDisplay = scale * this->scale() * size().currentRel();
-
     auto midtrans = Vector3f((sizeToDisplay / Vector2f(2.0, 2.0)).x(),
                              (sizeToDisplay / Vector2f(2.0, 2.0)).y(),
                              0.0);

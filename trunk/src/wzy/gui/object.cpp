@@ -15,7 +15,7 @@ Object::Object(const UDim& position,
 // -----------------------------------
 void Object::draw(const UDim& position, const Vector2f& scale) {
     for (auto obj : mObjects)
-        obj->draw(position + mPosition, scale + mScale);
+        obj->draw(position + mPosition, scale * mScale);
 }
 
 }

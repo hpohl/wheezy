@@ -44,6 +44,19 @@ WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_ASSIGNOPERATOR(^=)
 WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_ASSIGNOPERATOR(<<=)
 WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_ASSIGNOPERATOR(>>=)
 
+
+#define WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_UNARY(op) \
+template <int n, class T> \
+const Vector<n, T> operator op(const Vector<n, T>& v) { \
+    Vector<n, T> ret; \
+    for (int i = 0; i < n; ++i) \
+        ret[i] = op v[i]; \
+    return ret; \
+}
+
+WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_UNARY(+)
+WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_UNARY(-)
+
 }
 
 #endif

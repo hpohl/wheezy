@@ -77,15 +77,12 @@ public:
 
         mEnt->setPosition(wzy::Vector3f(0.0, 0.0, -1.0));
 
-        auto view = std::make_shared<wzy::gui::View>(wzy::gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
+        /*auto view = std::make_shared<wzy::gui::View>(wzy::gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
                                                      wzy::gui::UDim({ 0.5, 0.5 }, { 0, 0 }));
-        wzy::Engine::singleton().rootGUIObject()->attach(view);
+        wzy::Engine::singleton().rootGUIObject()->attach(view);*/
     }
 
     void update() {
-        // -------------------------------------------------------------
-        auto view = wzy::Engine::singleton().rootView();
-        view->scale(wzy::Vector2f(0.1, 0.1));
     }
 
 private:

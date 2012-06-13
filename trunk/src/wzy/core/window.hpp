@@ -45,8 +45,12 @@ public:
     bool isPressed(MouseButton but) const;
     bool isReleased(MouseButton but) const;
 
-    int mouseX() const;
-    int mouseY() const;
+    int mouseX() const
+    { return mMouseX; }
+    int mouseY() const
+    { return mMouseY; }
+    const Vector2i mousePos() const
+    { return Vector2i(mouseX(), mouseY()); }
 
 private:
     static bool mInitialised;

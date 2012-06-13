@@ -27,8 +27,11 @@ public:
     void setAbs(const Vector2i& abs)
     { mAbs = abs; }
 
-    const Vector2i current() const
+    const Vector2i currentAbs() const
     { return render::FrameBuffer::currentSize() * mRel + mAbs; }
+
+    const Vector2f currentRel() const
+    { return mRel + mAbs / static_cast<Vector2f>(render::FrameBuffer::currentSize()); }
 
 private:
     Vector2f mRel;
