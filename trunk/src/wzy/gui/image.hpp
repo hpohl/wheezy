@@ -21,10 +21,14 @@ public:
     void draw(const UDim& position,
               const Vector2f& scale) override;
 
+    const std::shared_ptr<render::Texture2D> texture()
+    { return mMaterial->textures()->at(0); }
+
+    void setTexture(const std::shared_ptr<render::Texture2D>& texture);
+
 
 private:
     std::shared_ptr<render::Data> mRenderData;
-    std::shared_ptr<render::Texture2D> mTexture;
     std::shared_ptr<Material> mMaterial;
 };
 

@@ -13,6 +13,7 @@ class Image {
 public:
     enum class Format {
         BMP,
+        JPG,
         PNG
     };
 

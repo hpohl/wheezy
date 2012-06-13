@@ -3,6 +3,7 @@
 
 #include <utility>
 
+#include <wzy/media/image.hpp>
 #include <wzy/utilities/noncopyable.hpp>
 #include <wzy/utilities/vec.hpp>
 
@@ -130,6 +131,10 @@ public:
 };
 
 typedef Texture<BasicTexture::Type::Tex2D> Texture2D;
+
+
+// ---------------------------------------------------
+const std::shared_ptr<Texture2D> textureFromImage(const Image& img);
 
 }
 }

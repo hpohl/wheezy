@@ -25,7 +25,7 @@ public:
     const Vector3f scale() const
     { return mScale; }
 
-    void setScale(const Vector3f& scale)
+    void scale(const Vector3f& scale)
     { mScale = scale; }
 
 

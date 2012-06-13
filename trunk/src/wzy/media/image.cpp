@@ -13,6 +13,7 @@ namespace {
 FREE_IMAGE_FORMAT formatToFI(Image::Format f) {
     switch (f) {
     case Image::Format::BMP: return FIF_BMP;
+    case Image::Format::JPG: return FIF_JPEG;
     case Image::Format::PNG: return FIF_PNG;
     default: throw Exception("Unknown image format.");
     }
@@ -20,6 +21,7 @@ FREE_IMAGE_FORMAT formatToFI(Image::Format f) {
 
 Image::Format extensionToFormat(const std::string& ext) {
     if (ext == "bmp") return Image::Format::BMP;
+    else if (ext == "jpg") return Image::Format::JPG;
     else if (ext == "png") return Image::Format::PNG;
 
     throw Exception("Unknown image file extension.");

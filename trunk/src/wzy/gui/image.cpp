@@ -9,10 +9,9 @@ Image::Image(const UDim& position,
              const std::shared_ptr<render::Texture2D>& texture) :
     Object(position, size),
     mRenderData(render::Data::quad()),
-    mTexture(texture),
     mMaterial(new Material) {
 
-    mMaterial->textures()->push_back(mTexture);
+    mMaterial->textures()->push_back(texture);
 }
 
 Image::~Image() {
@@ -21,8 +20,6 @@ Image::~Image() {
 
 // ----------------------------------
 void Image::draw(const UDim& position, const Vector2f& scale) {
-    Object::draw(position, scale);
-
     Matrix4f proj;
     orthographic(proj, 0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
     Matrix4f mdlview;
@@ -34,7 +31,6 @@ void Image::draw(const UDim& position, const Vector2f& scale) {
     auto postrans = Vector3f((position + this->position()).currentRel(), 0.0);
     auto totranslate = midtrans + postrans;
     totranslate = Vector3f(totranslate.x(), 1.0 - totranslate.y(), totranslate.z());
-    print(midtrans);
     translate(mdlview, totranslate);
 
     auto toscale = Vector3f(sizeToDisplay, 1.0);
@@ -44,6 +40,12 @@ void Image::draw(const UDim& position, const Vector2f& scale) {
     mMaterial->program()->uniform("wzyProjectionMatrix", proj);
     mMaterial->program()->uniform("wzyModelViewMatrix", mdlview);
     mRenderData->draw();
+
+    Object::draw(position, scale);
+}
+
+void Image::setTexture(const std::shared_ptr<render::Texture2D>& texture) {
+    mMaterial->textures()->at(0) = texture;
 }
 
 }

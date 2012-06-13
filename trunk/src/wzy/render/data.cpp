@@ -11,8 +11,8 @@ namespace render {
 const std::shared_ptr<Data> Data::quad() {
     static std::vector<Vector4f> vertices = {
         { -0.5, 0.5, 0.0, 1.0 },
-        { 0.5, 0.5, 0.0, 1.0 },
         { 0.5, -0.5, 0.0, 1.0 },
+        { 0.5, 0.5, 0.0, 1.0 },
 
         { -0.5, 0.5, 0.0, 1.0 },
         { -0.5, -0.5, 0.0, 1.0 },
@@ -21,8 +21,8 @@ const std::shared_ptr<Data> Data::quad() {
 
     static std::vector<Vector2f> texCoords = {
         { 0.0, 1.0 },
-        { 1.0, 1.0 },
         { 1.0, 0.0 },
+        { 1.0, 1.0 },
 
         { 0.0, 1.0 },
         { 0.0, 0.0 },

@@ -213,5 +213,33 @@ void BasicTexture::setTWrap(const Wrap& wrap) {
 }
 
 
+// -----------------------------------------------------
+const std::shared_ptr<Texture2D> textureFromImage(const Image& img) {
+    std::shared_ptr<Texture2D> ret(new Texture2D);
+
+    BasicTexture::BaseInternalFormat bif;
+    BasicTexture::Format f;
+
+    switch (img.bpp()) {
+    case 8:
+        bif = BasicTexture::BaseInternalFormat::R;
+        f = BasicTexture::Format::R;
+        break;
+    case 24:
+        bif = BasicTexture::BaseInternalFormat::RGB;
+        f = BasicTexture::Format::BGR;
+        break;
+    case 32:
+        bif = BasicTexture::BaseInternalFormat::RGBA;
+        f = BasicTexture::Format::BGRA;
+        break;
+    default: throw Exception("Unable to convert image to texture: Invalid bpp.");
+    }
+
+    ret->setImage(bif, img.size(), f, BasicTexture::DataType::UByte, img.data());
+    return ret;
+}
+
+
 }
 }

@@ -19,22 +19,22 @@
 
 std::vector<wzy::Vector4f> vertices = {
     {-0.8, 0.8, 0.0, 1.0},
-    {0.8, 0.8, 0.0, 1.0},
     {0.8, -0.8, 0.0, 1.0},
+    {0.8, 0.8, 0.0, 1.0},
 
     {-0.8, 0.8, 0.0, 1.0},
+    {-0.8, -0.8, 0.0, 1.0},
     {0.8, -0.8, 0.0, 1.0},
-    {-0.8, -0.8, 0.0, 1.0}
 };
 
 std::vector<wzy::Vector2f> texCoords = {
-    {0.0, 0.0},
+    {0.0, 1.0},
     {1.0, 0.0},
     {1.0, 1.0},
 
+    {0.0, 1.0},
     {0.0, 0.0},
-    {1.0, 1.0},
-    {0.0, 1.0}
+    {1.0, 0.0},
 };
 
 std::vector<wzy::Vector4f> colours = {
@@ -63,7 +63,7 @@ const std::shared_ptr<wzy::Model> createModel() {
                   data);
 
     auto mdl = std::make_shared<wzy::Model>(verts, cols, texCs);
-    mdl->material()->textures()->push_back(tex);
+    mdl->material()->textures()->push_back(wzy::render::textureFromImage(wzy::Image("images/landscape.jpg")));
 
     return mdl;
 }
@@ -83,6 +83,7 @@ public:
     }
 
     void update() {
+
     }
 
 private:
