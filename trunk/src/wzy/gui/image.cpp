@@ -11,7 +11,7 @@ Image::Image(const UDim& position,
     mRenderData(render::Data::quad()),
     mMaterial(new Material) {
 
-    mMaterial->textures()->push_back(texture);
+    material()->textures()->push_back(texture);
 }
 
 Image::~Image() {
@@ -36,16 +36,14 @@ void Image::draw(const UDim& position, const Vector2f& scale) {
     auto toscale = Vector3f(sizeToDisplay, 1.0);
     wzy::scale(mdlview, toscale);
 
-    mMaterial->use();
-    mMaterial->program()->uniform("wzyProjectionMatrix", proj);
-    mMaterial->program()->uniform("wzyModelViewMatrix", mdlview);
+    auto material = this->material();
+
+    material->use();
+    material->program()->uniform("wzyProjectionMatrix", proj);
+    material->program()->uniform("wzyModelViewMatrix", mdlview);
     mRenderData->draw();
 
     Object::draw(position, scale);
-}
-
-void Image::setTexture(const std::shared_ptr<render::Texture2D>& texture) {
-    mMaterial->textures()->at(0) = texture;
 }
 
 }

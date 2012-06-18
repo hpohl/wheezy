@@ -25,6 +25,11 @@ public:
     float aspect() const
     { return mAspect; }
 
+    void setAspect(float aspect)
+    { mAspect = aspect; }
+
+    const Matrix4f projection() const;
+
 private:
     float mFovY;
     float mZNear, mZFar;

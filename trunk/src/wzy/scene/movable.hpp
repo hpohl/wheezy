@@ -2,6 +2,7 @@
 #define WZY_SCENE_MOVEABLE_HPP
 
 #include <wzy/utilities/mat.hpp>
+#include <wzy/utilities/quaternion.hpp>
 #include <wzy/utilities/vec.hpp>
 
 
@@ -25,8 +26,14 @@ public:
     const Vector3f scale() const
     { return mScale; }
 
-    void scale(const Vector3f& scale)
+    void setScale(const Vector3f& scale)
     { mScale = scale; }
+
+    const Quaternion rotation() const
+    { return mRotation; }
+
+    void setRotation(const Quaternion& rot)
+    { mRotation = rot; }
 
 
     const Matrix4f transformation() const;
@@ -34,6 +41,7 @@ public:
 private:
     Vector3f mPosition;
     Vector3f mScale;
+    Quaternion mRotation;
 };
 
 }

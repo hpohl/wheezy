@@ -48,22 +48,27 @@ std::vector<wzy::Vector4f> colours = {
 };
 
 const std::shared_ptr<wzy::Model> createModel() {
-    auto verts = std::make_shared<std::vector<wzy::Vector4f> >(vertices);
+    /*auto verts = std::make_shared<std::vector<wzy::Vector4f> >(vertices);
     auto cols = std::make_shared<std::vector<wzy::Vector4f> >(colours);
     auto texCs = std::make_shared<std::vector<wzy::Vector2f> >(texCoords);
 
-    auto tex = std::make_shared<wzy::render::Texture2D>();
-
-    unsigned char* data = new unsigned char[512 * 512 * 3];
-
-    memset(data, 255, 512 * 512 * 3);
-
-    tex->setImage(wzy::render::Texture2D::BaseInternalFormat::RGB, wzy::Vector2i(512, 512),
-                  wzy::render::Texture2D::Format::RGB, wzy::render::Texture2D::DataType::UByte,
-                  data);
-
     auto mdl = std::make_shared<wzy::Model>(verts, cols, texCs);
-    mdl->material()->textures()->push_back(wzy::render::textureFromImage(wzy::Image("images/landscape.jpg")));
+    auto prog = std::make_shared<wzy::render::Program>();
+    prog->setColourDefault();
+    mdl->material()->setProgram(prog);
+    //mdl->material()->textures()->push_back(wzy::render::textureFromImage(wzy::Image("images/landscape.jpg")));*/
+
+    auto mdl = wzy::loadFromOBJ("models/altair.obj");
+
+    std::vector<wzy::Vector4f> colours(mdl->vertices()->size(), wzy::Vector4f(1.0, 0.0, 0.0, 1.0));
+
+    mdl->setColours(std::make_shared<decltype(colours)>(colours));
+
+    mdl->update();
+
+    auto prog = std::make_shared<wzy::render::Program>();
+    prog->setColourDefault();
+    mdl->material()->setProgram(prog);
 
     return mdl;
 }
@@ -75,15 +80,20 @@ public:
         mEnt(std::make_shared<wzy::Entity>(mModel)) {
         wzy::Engine::singleton().rootNode()->attach(mEnt);
 
-        mEnt->setPosition(wzy::Vector3f(0.0, 0.0, -1.0));
-
-        /*auto view = std::make_shared<wzy::gui::View>(wzy::gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
-                                                     wzy::gui::UDim({ 0.5, 0.5 }, { 0, 0 }));
-        wzy::Engine::singleton().rootGUIObject()->attach(view);*/
+        mEnt->setPosition(wzy::Vector3f(0.0, 0.0, -5.0));
     }
 
     void update() {
+        auto cam = wzy::Engine::singleton().rootView()->camera();
 
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::w))
+            cam->setPosition(cam->position() + wzy::Vector3f(-0.1, 0.0, 0.0));
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::e))
+            cam->setPosition(cam->position() + wzy::Vector3f(0.0, 0.0, -0.1));
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::r))
+            cam->setPosition(cam->position() + wzy::Vector3f(0.1, 0.0, 0.0));
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::d))
+            cam->setPosition(cam->position() + wzy::Vector3f(0.0, 0.0, 0.1));
     }
 
 private:

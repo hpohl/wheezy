@@ -30,17 +30,17 @@ public:
     const UDim position() const
     { return mPosition; }
 
+    void move(const UDim& position)
+    { mPosition = position; }
+
     const UDim size() const
     { return mSize; }
 
+    void resize(const UDim& size)
+    { mSize = size; }
+
     const Vector2f scale() const
     { return mScale; }
-
-    void setPosition(const UDim& position)
-    { mPosition = position; }
-
-    void setSize(const UDim& size)
-    { mSize = size; }
 
     void scale(const Vector2f& scale)
     { mScale = scale; }

@@ -72,7 +72,17 @@ const std::string Program::infoLog() const {
 
 void Program::setDefault() {
     shader<BasicShader::Type::Vertex>()->setSource(fileToString("shaders/default/vertex.glsl"));
+    shader<BasicShader::Type::Vertex>()->compile();
     shader<BasicShader::Type::Fragment>()->setSource(fileToString("shaders/default/fragment.glsl"));
+    shader<BasicShader::Type::Fragment>()->compile();
+    link();
+}
+
+void Program::setColourDefault() {
+    shader<BasicShader::Type::Vertex>()->setSource(fileToString("shaders/colour/vertex.glsl"));
+    shader<BasicShader::Type::Vertex>()->compile();
+    shader<BasicShader::Type::Fragment>()->setSource(fileToString("shaders/colour/fragment.glsl"));
+    shader<BasicShader::Type::Fragment>()->compile();
     link();
 }
 
@@ -95,6 +105,11 @@ bool Program::attachedGL(const std::shared_ptr<BasicShader>& shader) const {
             return true;
 
     return false;
+}
+
+bool Program::hasUniform(const std::string& name) const {
+    auto loc = glGetUniformLocation(mName, name.c_str());
+    return loc != -1;
 }
 
 void Program::uniform(const std::string& name, int v) {

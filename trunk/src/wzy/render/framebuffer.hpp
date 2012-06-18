@@ -2,6 +2,7 @@
 #define WZY_RENDER_FRAMEBUFFER_HPP
 
 #include <memory>
+#include <stack>
 #include <vector>
 
 #include <wzy/render/texture.hpp>
@@ -14,6 +15,19 @@ namespace render {
 
 class FrameBuffer : public NonCopyable {
 public:
+    class Pusher {
+    public:
+        Pusher(const std::shared_ptr<FrameBuffer>& fb);
+        ~Pusher();
+
+        void pop();
+
+    private:
+        unsigned int mPrevious;
+        bool mPopped;
+    };
+
+
     static void useDefault();
     static const Vector2i currentSize();
 

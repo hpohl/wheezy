@@ -7,6 +7,7 @@
 
 #include <wzy/render/shader.hpp>
 #include <wzy/utilities/exception.hpp>
+#include <wzy/utilities/general.hpp>
 #include <wzy/utilities/mat.hpp>
 #include <wzy/utilities/noncopyable.hpp>
 #include <wzy/utilities/vec.hpp>
@@ -45,7 +46,9 @@ public:
     const std::string infoLog() const;
 
     void setDefault();
+    void setColourDefault();
 
+    bool hasUniform(const std::string& name) const;
 
     void uniform(const std::string& name, int v);
     void uniform(const std::string& name, const std::vector<int>& v);
@@ -78,6 +81,8 @@ const std::shared_ptr<Shader<type> > Program::shader() {
 
 template <BasicShader::Type type>
 void Program::setShader(const std::shared_ptr<Shader<type> >& shader) {
+    wzy::validate(shader);
+
     for (auto it = mShaders.begin(); it != mShaders.end(); ++it) {
         if ((*it)->type() == type) {
             detach(shader);

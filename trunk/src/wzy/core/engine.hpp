@@ -59,13 +59,13 @@ public:
 
 
     // -----------------------------------
-    std::shared_ptr<SceneNode> rootNode()
+    const std::shared_ptr<SceneNode> rootNode()
     { return mRootNode; }
 
-    std::shared_ptr<gui::Object> rootGUIObject()
+    const std::shared_ptr<gui::Object> rootGUIObject()
     { return mRootGUIObject; }
 
-    std::shared_ptr<gui::View> rootView()
+    const std::shared_ptr<gui::View> rootView()
     { return mRootView; }
 
 

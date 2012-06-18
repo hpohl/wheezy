@@ -13,7 +13,7 @@ void init() {
         if (glewInit() != GLEW_NO_ERROR)
             throw Exception("Unable to initialise renderer.");
 
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
 

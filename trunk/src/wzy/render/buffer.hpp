@@ -105,37 +105,6 @@ public:
 };
 
 
-// -----------------------------------------------
-class UniformBuffer : public AbstractBuffer<AbstractBasicBuffer::Type::Uniform,
-        AbstractBasicBuffer::Usage::DynamicDraw> {
-public:
-    template <typename T>
-    struct Item {
-        const std::string name;
-        const T val;
-    };
-
-    typedef Item<double> DoubleItem;
-    typedef Item<int> IntItem;
-    typedef Item<float> FloatItem;
-
-    typedef Item<Vector2f> Vec2Item;
-    typedef Item<Vector3f> Vec3Item;
-    typedef Item<Vector4f> Vec4Item;
-
-
-    template <class... Args>
-    UniformBuffer(const std::shared_ptr<Program>& prog, Args&&... args) :
-        AbstractBuffer<AbstractBasicBuffer::Type::Uniform,
-        AbstractBasicBuffer::Usage::DynamicDraw>(std::forward<Args>(args)...),
-        mProg(prog) {
-    }
-
-private:
-    const std::shared_ptr<Program> mProg;
-};
-
-
 }
 }
 

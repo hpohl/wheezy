@@ -15,8 +15,11 @@ void FrameBuffer::useDefault() {
 const Vector2i FrameBuffer::currentSize() {
     GLint name = 0;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &name);
+
+    Vector2i ret;
+
     if (name == 0)
-        return Window::currentWindow().size();
+        ret = Window::currentWindow().size();
     else {
         glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
                                               GL_COLOR_ATTACHMENT0,
@@ -31,8 +34,35 @@ const Vector2i FrameBuffer::currentSize() {
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
 
-        return { width, height };
+        ret = Vector2i(width, height);
     }
+
+    return ret;
+}
+
+
+// -----------------------------------------------
+FrameBuffer::Pusher::Pusher(const std::shared_ptr<FrameBuffer>& fb) :
+    mPrevious(0),
+    mPopped(false) {
+
+    GLint name = 0;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &name);
+    mPrevious = name;
+
+    fb->bind();
+}
+
+FrameBuffer::Pusher::~Pusher() {
+    pop();
+}
+
+
+// --------------------------------------------------
+void FrameBuffer::Pusher::pop() {
+    if (!mPopped)
+        glBindFramebuffer(GL_FRAMEBUFFER, mPrevious);
+    mPopped = true;
 }
 
 

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <wzy/render/texture.hpp>
+#include <wzy/utilities/general.hpp>
 
 
 namespace wzy {
@@ -24,6 +25,9 @@ public:
 
     const std::shared_ptr<render::Program> program()
     { return mProgram; }
+
+    void setProgram(const std::shared_ptr<render::Program>& prog)
+    { mProgram = validate(prog); }
 
     const TexturesPtr textures()
     { return mTextures; }

@@ -21,7 +21,7 @@ public:
     void attach(const std::shared_ptr<AbstractSceneNode>& node);
     void detach(const std::shared_ptr<AbstractSceneNode>& node);
 
-    virtual void draw(const Matrix4f& transform);
+    virtual void draw(const Matrix4f& projection, const Matrix4f& transform);
 
 private:
     std::set<std::shared_ptr<AbstractSceneNode> > mChildren;

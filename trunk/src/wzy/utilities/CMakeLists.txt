@@ -24,8 +24,10 @@ vec/functions/general.hpp
 vec/operators/logic.hpp
 vec/operators/math.hpp
 
+euler.hpp
 info.hpp
 noncopyable.hpp
+quaternion.hpp
 singleton.hpp
 tmp.hpp
 )

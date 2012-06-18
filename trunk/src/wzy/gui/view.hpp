@@ -3,6 +3,7 @@
 
 #include <wzy/gui/image.hpp>
 #include <wzy/render/framebuffer.hpp>
+#include <wzy/scene/camera.hpp>
 
 
 namespace wzy {
@@ -12,13 +13,18 @@ namespace gui {
 class View : public Image {
 public:
     View(const UDim& position,
-         const UDim& size);
+         const UDim& size,
+         const Vector2i& frameBufferSize = Vector2i(0, 0));
 
     void draw(const UDim& position,
               const Vector2f& scale) override;
 
+    const std::shared_ptr<Camera> camera()
+    { return mCamera; }
+
 private:
     std::shared_ptr<render::FrameBuffer> mFB;
+    std::shared_ptr<Camera> mCamera;
 };
 
 }

@@ -13,7 +13,7 @@
 
 namespace wzy {
 
-class Model final {
+class Model {
 public:
     typedef std::shared_ptr<std::vector<std::shared_ptr<Model> > > ModelsPtr;
     typedef std::shared_ptr<std::vector<Vector4f> > VerticesPtr;
@@ -33,7 +33,7 @@ public:
     { mName = name; }
 
     void attach(const std::shared_ptr<Model>& mdl)
-    { mChildren->push_back(mdl); }
+    { mChildren->push_back(validate(mdl)); }
 
     void detach(const std::shared_ptr<Model>& mdl)
     { std::remove(mChildren->begin(), mChildren->end(), mdl); }
@@ -48,7 +48,21 @@ public:
     { return mMaterial; }
 
     void setMaterial(const std::shared_ptr<Material>& mtl)
-    { mMaterial = mtl; }
+    { mMaterial = validate(mtl); }
+
+    const VerticesPtr vertices()
+    { return mVertices; }
+
+    void setVertices(const VerticesPtr& ptr)
+    { mVertices = validate(ptr); }
+
+    void setColours(const ColoursPtr& ptr)
+    { mColours = validate(ptr); }
+
+    void setTexCoords(const TexCoordsPtr& ptr)
+    { mTexCoords = validate(ptr); }
+
+    void update();
 
 private:
     std::string mName;
@@ -58,9 +72,9 @@ private:
     TexCoordsPtr mTexCoords;
     std::shared_ptr<Material> mMaterial;
     std::shared_ptr<render::Data> mRenderData;
-
-    void update();
 };
+
+const std::shared_ptr<Model> loadFromOBJ(const std::string& fileName);
 
 }
 

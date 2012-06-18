@@ -8,18 +8,20 @@
 namespace wzy {
 namespace render {
 
-const std::shared_ptr<Data> Data::quad() {
-    static std::vector<Vector4f> vertices = {
-        { -0.5, 0.5, 0.0, 1.0 },
-        { 0.5, -0.5, 0.0, 1.0 },
-        { 0.5, 0.5, 0.0, 1.0 },
+const std::shared_ptr<Data> Data::quad(const Vector2f& size) {
+    Vector2f halfSize = size / 2.0;
 
-        { -0.5, 0.5, 0.0, 1.0 },
-        { -0.5, -0.5, 0.0, 1.0 },
-        { 0.5, -0.5, 0.0, 1.0 }
+    std::vector<Vector4f> vertices = {
+        { -halfSize.x(), halfSize.y(), 0.0, 1.0 },
+        { halfSize.x(), -halfSize.y(), 0.0, 1.0 },
+        { halfSize.x(), halfSize.y(), 0.0, 1.0 },
+
+        { -halfSize.x(), halfSize.y(), 0.0, 1.0 },
+        { -halfSize.x(), -halfSize.y(), 0.0, 1.0 },
+        { halfSize.x(), -halfSize.y(), 0.0, 1.0 }
     };
 
-    static std::vector<Vector2f> texCoords = {
+    std::vector<Vector2f> texCoords = {
         { 0.0, 1.0 },
         { 1.0, 0.0 },
         { 1.0, 1.0 },
@@ -47,9 +49,9 @@ const std::shared_ptr<Data> Data::quad() {
 // ------------------------------------------
 Data::Data() :
     mName(0),
-    mVertexBuffer(),
-    mColourBuffer(),
-    mTexCoordBuffer() {
+    mVertexBuffer(new VertexBuffer),
+    mColourBuffer(new ColourBuffer),
+    mTexCoordBuffer(new TexCoordBuffer) {
 
     glGenVertexArrays(1, &mName);
     if (!mName)
@@ -62,7 +64,12 @@ Data::Data(const std::shared_ptr<const VertexBuffer>& vertices,
     mName(0),
     mVertexBuffer(vertices),
     mColourBuffer(colours),
-    mTexCoordBuffer(texCoords) { }
+    mTexCoordBuffer(texCoords) {
+
+    glGenVertexArrays(1, &mName);
+    if (!mName)
+        throw Exception("Unable to create vertex array.");
+}
 
 Data::~Data() {
     glDeleteVertexArrays(1, &mName);
@@ -76,15 +83,15 @@ void Data::bind() const {
 void Data::set() const {
     bind();
 
-    if (mVertexBuffer) {
+    if (mVertexBuffer->count() > 0) {
         mVertexBuffer->bind();
         glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(10);
-    } if (mColourBuffer) {
+    } if (mColourBuffer->count() >= mVertexBuffer->count()) {
         mColourBuffer->bind();
         glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(11);
-    } if (mTexCoordBuffer) {
+    } if (mTexCoordBuffer->count() >= mVertexBuffer->count()) {
         mTexCoordBuffer->bind();
         glVertexAttribPointer(12, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(12);
@@ -93,7 +100,7 @@ void Data::set() const {
 
 void Data::draw() const {
     set();
-    glDrawArrays(GL_TRIANGLES, 0, mVertexBuffer->size());
+    glDrawArrays(GL_TRIANGLES, 0, mVertexBuffer->count());
 }
 
 }

@@ -20,9 +20,9 @@ void AbstractSceneNode::detach(const std::shared_ptr<AbstractSceneNode>& node) {
         throw Exception("Unable to detach scene node.");
 }
 
-void AbstractSceneNode::draw(const Matrix4f& transform) {
+void AbstractSceneNode::draw(const Matrix4f& projection, const Matrix4f& transform) {
     for (auto node : mChildren)
-        node->draw(transform * transformation());
+        node->draw(projection, transform * transformation());
 }
 
 }

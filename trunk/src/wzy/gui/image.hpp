@@ -4,6 +4,7 @@
 #include <wzy/gui/object.hpp>
 #include <wzy/render/data.hpp>
 #include <wzy/scene/material.hpp>
+#include <wzy/utilities/general.hpp>
 
 
 namespace wzy {
@@ -24,7 +25,14 @@ public:
     const std::shared_ptr<render::Texture2D> texture()
     { return mMaterial->textures()->at(0); }
 
-    void setTexture(const std::shared_ptr<render::Texture2D>& texture);
+    void setTexture(const std::shared_ptr<render::Texture2D>& texture)
+    { material()->textures()->at(0) = validate(texture); }
+
+    const std::shared_ptr<Material> material()
+    { return mMaterial; }
+
+    void setMaterial(const std::shared_ptr<Material>& ptr)
+    { mMaterial = validate(ptr); }
 
 
 private:

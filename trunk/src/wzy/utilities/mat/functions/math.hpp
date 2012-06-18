@@ -30,8 +30,8 @@ void orthographic(Matrix<4, 4, T>& m,
 template <class T>
 void perspective(Matrix<4, 4, T>& m, float fovy, float aspect, float zNear, float zFar) {
     identity(m);
-    m[0][0] = std::atan(degreesToRadians(fovy / 2.0)) / aspect;
-    m[1][1] = std::atan(degreesToRadians(fovy / 2.0));
+    m[0][0] = 1.0 / std::tan(degreesToRadians(fovy / 2.0)) / aspect;
+    m[1][1] = 1.0 / std::tan(degreesToRadians(fovy / 2.0));
     m[2][2] = -((zFar + zNear) / (zFar - zNear));
     m[2][3] = -((2.0 * zNear * zFar) / (zFar - zNear));
     m[3][2] = -1;

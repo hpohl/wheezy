@@ -9,7 +9,7 @@ namespace wzy {
 template <int n, class Tlhs, class Trhs>
 bool operator==(const Vector<n, Tlhs>& lhs, const Vector<n, Trhs>& rhs) {
     for (int i = 0; i < n; ++i)
-        if (lhs[i] == rhs[i])
+        if (lhs[i] != rhs[i])
             return false;
     return true;
 }

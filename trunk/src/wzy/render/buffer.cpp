@@ -17,9 +17,9 @@ struct TypeInfo {
 };
 
 std::map<AbstractBasicBuffer::Type, TypeInfo> typeMap = {
-    {AbstractBasicBuffer::Type::Array, {GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING}},
-    {AbstractBasicBuffer::Type::ElementArray, {GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING}},
-    {AbstractBasicBuffer::Type::Uniform, {GL_UNIFORM_BUFFER, GL_UNIFORM_BUFFER_BINDING}}
+    { AbstractBasicBuffer::Type::Array, { GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING }},
+    { AbstractBasicBuffer::Type::ElementArray, { GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING }},
+    { AbstractBasicBuffer::Type::Uniform, { GL_UNIFORM_BUFFER, GL_UNIFORM_BUFFER_BINDING }}
 };
 
 const TypeInfo typeToInfo(AbstractBasicBuffer::Type t) {

@@ -39,6 +39,16 @@ template <int rowslhs, int colslhs, class Tlhs,
 Matrix<rowslhs, colslhs, Tlhs>& operator*=(Matrix<rowslhs, colslhs, Tlhs>& lhs, const Matrix<rowsrhs, colsrhs, Trhs>& rhs)
 { lhs = lhs * rhs; return lhs; }
 
+
+template <int rows, int cols, class T>
+const Matrix<rows, cols, T> operator-(const Matrix<rows, cols, T>& m) {
+    Matrix<rows, cols, T> ret;
+    for (int row = 0; row < rows; ++row)
+        for (int col = 0; col < cols; ++col)
+            ret[row][col] = -m[row][col];
+    return ret;
+}
+
 }
 
 #endif

@@ -19,7 +19,7 @@ Engine::Engine() :
 
     mRootView.reset(new gui::View(gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
                                   gui::UDim({ 1.0, 1.0 }, { 0, 0 })));
-    mRootGUIObject->attach(mRootView);
+    rootGUIObject()->attach(rootView());
 }
 
 Engine::~Engine() {
@@ -45,7 +45,7 @@ const Engine::ConstStateStack Engine::states() const {
 void Engine::draw() {
     render::FrameBuffer::useDefault();
     render::clear();
-    mRootGUIObject->draw(gui::UDim({ 0.0, 0.0 }, { 0, 0 }), { 1.0, 1.0 });
+    rootGUIObject()->draw(gui::UDim({ 0.0, 0.0 }, { 0, 0 }), { 1.0, 1.0 });
 }
 
 }

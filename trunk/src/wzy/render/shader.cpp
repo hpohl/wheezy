@@ -117,7 +117,7 @@ void BasicShader::setSource(const std::string& source) {
 void BasicShader::compile() {
     glCompileShader(mName);
     if (!compiled())
-        throw Exception("Failed to compile shader.");
+        throw Exception("Failed to compile shader. Log: \n" + infoLog());
 }
 
 bool BasicShader::compiled() const {

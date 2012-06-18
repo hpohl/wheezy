@@ -28,7 +28,10 @@ public:
     const std::shared_ptr<const Model> model() const
     { return mModel; }
 
-    void draw(const Matrix4f& transform) override;
+    void setModel(const std::shared_ptr<Model>& mdl)
+    { mModel = validate(mdl); }
+
+    void draw(const Matrix4f& projection, const Matrix4f& transform) override;
 
 private:
     std::shared_ptr<Model> mModel;
