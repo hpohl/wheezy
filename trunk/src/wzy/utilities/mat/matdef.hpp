@@ -8,6 +8,7 @@
 #include <wzy/utilities/mat/functions/general.hpp>
 #include <wzy/utilities/mat/functions/math.hpp>
 #include <wzy/utilities/mat/operators/math.hpp>
+#include <wzy/utilities/mat/aliases.hpp>
 #include <wzy/utilities/tmp.hpp>
 #include <wzy/utilities/vec.hpp>
 
@@ -65,22 +66,6 @@ public:
 private:
     Vector<cols, T> mData[rows];
 };
-
-
-// -----------------------------
-template <class T>
-using Matrix2 = Matrix<2, 2, T>;
-
-template <class T>
-using Matrix3 = Matrix<3, 3, T>;
-
-template <class T>
-using Matrix4 = Matrix<4, 4, T>;
-
-
-typedef Matrix2<float> Matrix2f;
-typedef Matrix3<float> Matrix3f;
-typedef Matrix4<float> Matrix4f;
 
 }
 

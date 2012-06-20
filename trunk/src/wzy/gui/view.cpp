@@ -27,6 +27,7 @@ void View::draw(const UDim& position,
 
     Matrix4f transf;
     translate(transf, -camera()->position());
+    rotate(transf, camera()->rotation());
 
     render::clear();
     Engine::singleton().rootNode()->draw(camera()->projection(), transf);

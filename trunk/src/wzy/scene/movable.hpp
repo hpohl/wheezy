@@ -11,9 +11,11 @@ namespace wzy {
 class Movable {
 public:
     Movable(const Vector3f& position = Vector3f(0.0, 0.0, 0.0),
-            const Vector3f& scale = Vector3f(1.0, 1.0, 1.0)) :
+            const Vector3f& scale = Vector3f(1.0, 1.0, 1.0),
+            const Quaternionf& rotation = Quaternionf()) :
         mPosition(position),
-        mScale(scale) { }
+        mScale(scale),
+        mRotation(rotation) { }
 
     virtual ~Movable() = 0;
 
@@ -29,10 +31,10 @@ public:
     void setScale(const Vector3f& scale)
     { mScale = scale; }
 
-    const Quaternion rotation() const
+    const Quaternionf rotation() const
     { return mRotation; }
 
-    void setRotation(const Quaternion& rot)
+    void setRotation(const Quaternionf& rot)
     { mRotation = rot; }
 
 
@@ -41,7 +43,7 @@ public:
 private:
     Vector3f mPosition;
     Vector3f mScale;
-    Quaternion mRotation;
+    Quaternionf mRotation;
 };
 
 }

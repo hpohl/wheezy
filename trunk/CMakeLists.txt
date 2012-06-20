@@ -16,6 +16,9 @@ project(wheezy)
 # Use C++ 11
 add_definitions(-std=c++11 -Wall)
 
+# Use GCC
+#set(CMAKE_CXX_COMPILER g++)
+
 # Use Eigen 3
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})

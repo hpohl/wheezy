@@ -1,5 +1,6 @@
 #include <wzy/utilities/mat/matdef.hpp>
 
+
 namespace wzy {
 
 template class Matrix<2, 2, float>;

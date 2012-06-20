@@ -94,6 +94,10 @@ public:
             cam->setPosition(cam->position() + wzy::Vector3f(0.1, 0.0, 0.0));
         if (wzy::Engine::singleton().isPressed(wzy::Window::Key::d))
             cam->setPosition(cam->position() + wzy::Vector3f(0.0, 0.0, 0.1));
+
+        if (wzy::Engine::singleton().isPressed(wzy::Engine::Key::h)) {
+            cam->setRotation(cam->rotation() * wzy::Quaternionf(wzy::Degree(0.0), wzy::Degree(1.0), wzy::Radian(0.0)));
+        }
     }
 
 private:
@@ -103,6 +107,10 @@ private:
 
 int main()
 try {
+    wzy::Quaternionf q(wzy::Degree(90.0), wzy::Degree(0.0), wzy::Degree(90.0));
+
+    print(wzy::getMatrix(q));
+
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
 
