@@ -117,7 +117,15 @@ Window& Window::currentWindow() {
 }
 
 void Window::displayFunc() {
-    currentWindow().frame();
+    Window& win = currentWindow();
+    win.mTimeSinceLastUpdate = glutGet(GLUT_ELAPSED_TIME) - win.mTimeSinceLastUpdate;
+
+    if (!win.mMouseForceUpdated)
+        win.mMouseForce = Vector2i(0, 0);
+    else
+        win.mMouseForceUpdated = false;
+
+    win.frame();
     glutSwapBuffers();
     glutPostRedisplay();
 }
@@ -155,11 +163,22 @@ void Window::mouseFunc(int button, int state, int, int) {
     }
 }
 
-void Window::passiveMotionFunc(int x, int y) {
+void Window::motionFunc(int x, int y) {
     Window& win = currentWindow();
-    win.mMouseX = x;
-    win.mMouseY = y;
+    win.mLastMousePos = win.mMousePos;
+    win.mMousePos.setX(x);
+    win.mMousePos.setY(y);
+    win.mMouseForce = win.mMousePos - win.mLastMousePos;
+    win.mMouseForceUpdated = true;
     win.mouseMoved({x, y});
+}
+
+void Window::passiveMotionFunc(int x, int y) {
+/*    Window& win = currentWindow();
+    win.mMouseForce = Vector2i(x, y) - win.mMousePos;
+    win.mMousePos.setX(x);
+    win.mMousePos.setY(y);
+    win.mouseMoved({x, y});*/
 }
 
 void Window::closeFunc() {
@@ -172,6 +191,11 @@ Window::Window() :
     mId(0),
     mKeys(),
     mMouseButtons(),
+    mMousePos(),
+    mLastMousePos(),
+    mMouseForce(),
+    mMouseForceUpdated(false),
+    mTimeSinceLastUpdate(0),
     mClosed(false) {
 
     if (!mInitialised) {
@@ -181,7 +205,7 @@ Window::Window() :
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
     }
 
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_MULTISAMPLE);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
     glutInitWindowSize(defaultSize.x(), defaultSize.y());
     mId = glutCreateWindow("wzy::Window");
 
@@ -193,7 +217,8 @@ Window::Window() :
     glutKeyboardFunc(keyboardFunc);
     glutKeyboardUpFunc(keyboardUpFunc);
     glutMouseFunc(mouseFunc);
-    glutPassiveMotionFunc(passiveMotionFunc);
+    glutMotionFunc(motionFunc);
+    //glutPassiveMotionFunc(passiveMotionFunc);
     glutCloseFunc(closeFunc);
 
     mWindows.insert(std::make_pair(mId, this));

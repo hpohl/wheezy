@@ -4,6 +4,7 @@
 #include <utility>
 
 #include <wzy/utilities/quaternion/quaternionfwd.hpp>
+#include <wzy/utilities/vec.hpp>
 
 
 namespace wzy {
@@ -17,6 +18,16 @@ operator*(const Quaternion<Tlhs>& lhs, const Quaternion<Trhs>& rhs) {
     ret.setY(lhs.w() * rhs.y() - lhs.x() * rhs.z() + lhs.y() * rhs.w() + lhs.z() * rhs.x());
     ret.setZ(lhs.w() * rhs.z() + lhs.x() * rhs.y() - lhs.y() * rhs.x() + lhs.z() * rhs.w());
     return ret;
+}
+
+template <class Tlhs, class Trhs>
+const Vector3<Trhs> operator*(const Quaternion<Tlhs>& lhs, const Vector3<Trhs>& rhs) {
+    Vector3<Trhs> v(rhs);
+    normalise(v);
+    Quaternion<Tlhs> vecQuat(0.0, v.x(), v.y(), v.z());
+    vecQuat *= conjugate(lhs);
+    vecQuat = lhs * vecQuat;
+    return Vector3<Trhs>(vecQuat.x(), vecQuat.y(), vecQuat.z());
 }
 
 

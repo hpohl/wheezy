@@ -2,6 +2,7 @@
 #define WZY_UTILITIES_QUATERNION_QUATERNIONDEF_HPP
 
 #include <wzy/utilities/quaternion/functions/general.hpp>
+#include <wzy/utilities/quaternion/functions/math.hpp>
 #include <wzy/utilities/quaternion/operators/math.hpp>
 #include <wzy/utilities/quaternion/aliases.hpp>
 #include <wzy/utilities/vec.hpp>

@@ -9,6 +9,9 @@ namespace wzy {
 Engine::Engine() :
     Singleton<Engine>(),
     Window(),
+    mEngineStarted(std::chrono::system_clock::now()),
+    mLastFrameTime(mEngineStarted),
+    mLastFrameDuration(1),
     mStates(),
     mRootNode(new SceneNode),
     mRootGUIObject(new gui::Object(gui::UDim({ 0.0, 0.0 }, { 0, 0 }),
@@ -28,6 +31,10 @@ Engine::~Engine() {
 
 // -----------------------------------------------
 void Engine::frame() {
+    auto now = std::chrono::system_clock::now();
+    mLastFrameDuration = std::chrono::duration_cast<std::chrono::milliseconds>(now - mLastFrameTime);
+    mLastFrameTime = now;
+
     for (std::shared_ptr<State>& state : mStates)
         state->update();
     draw();

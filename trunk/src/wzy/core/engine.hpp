@@ -1,6 +1,7 @@
 #ifndef WZY_CORE_ENGINE_HPP
 #define WZY_CORE_ENGINE_HPP
 
+#include <chrono>
 #include <memory>
 #include <typeindex>
 #include <vector>
@@ -28,6 +29,20 @@ public:
 
     // ---------------------------------------------------
     void frame();
+
+
+    // ---------------------------------------------------
+    const std::chrono::time_point<std::chrono::system_clock> timeStarted() const
+    { return mEngineStarted; }
+
+    const std::chrono::time_point<std::chrono::system_clock> lastFrameTime() const
+    { return mLastFrameTime; }
+
+    const std::chrono::milliseconds lastFrameDuration() const
+    { return mLastFrameDuration; }
+
+    float timeRatio() const
+    { return static_cast<float>(mLastFrameDuration.count() / 1000.0); }
 
 
     // --------------------------------------------------
@@ -70,6 +85,9 @@ public:
 
 
 private:
+    std::chrono::time_point<std::chrono::system_clock> mEngineStarted;
+    std::chrono::time_point<std::chrono::system_clock> mLastFrameTime;
+    std::chrono::milliseconds mLastFrameDuration;
     StateStack mStates;
     std::shared_ptr<SceneNode> mRootNode;
     std::shared_ptr<gui::Object> mRootGUIObject;

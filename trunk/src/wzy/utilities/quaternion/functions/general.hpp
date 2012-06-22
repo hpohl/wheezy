@@ -13,7 +13,15 @@
 
 namespace wzy {
 
-template <class T, class... Args>
+template <class T, class TW, class TX, class TY, class TZ>
+void assign(Quaternion<T>& quat, const TW& w, const TX& x, const TY& y, const TZ& z) {
+    quat.setW(w);
+    quat.setX(x);
+    quat.setY(y);
+    quat.setZ(z);
+}
+
+template <class T>
 void assign(Quaternion<T>& quat, const Radian& roll, const Radian& pitch, const Radian& yaw) {
     T sinRoll = std::sin(roll.v() / 2.0);
     T cosRoll = std::cos(roll.v() / 2.0);
@@ -41,18 +49,6 @@ void assign(Quaternion<T>& quat, const Quaternion<Tv>& val) {
 }
 
 template <class T>
-void identity(Quaternion<T>& quat) {
-    quat.setW(1.0);
-    quat.setX(0.0);
-    quat.setY(0.0);
-    quat.setZ(0.0);
-}
-
-template <class T>
-float magnitude(const Quaternion<T>& quat)
-{ return std::sqrt(quat.w() * quat.w() + quat.x() * quat.x() + quat.y() * quat.y() + quat.z() * quat.z()); }
-
-template <class T>
 const Matrix3<T> getMatrix(const Quaternion<T>& quat) {
     return Matrix3<T>(
                 1.0 - 2.0 * (quat.y() * quat.y() + quat.z() * quat.z()),
@@ -70,17 +66,8 @@ const Matrix3<T> getMatrix(const Quaternion<T>& quat) {
 }
 
 template <class T>
-void normalise(Quaternion<T>& quat)
-{ quat /= magnitude(quat); }
-
-template <class T>
 void print(const Quaternion<T>& quat) {
     std::cout << quat.w() << ", " << quat.x() << ", " << quat.y() << ", " << quat.z() << std::endl;
-}
-
-template <int rows, int cols, class Tm, class Tq>
-void rotate(Matrix<rows, cols, Tm>& m, const Quaternion<Tq>& quat) {
-    m *= Matrix<rows, cols, Tm>(getMatrix(quat));
 }
 
 }

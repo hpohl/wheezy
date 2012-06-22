@@ -45,12 +45,11 @@ public:
     bool isPressed(MouseButton but) const;
     bool isReleased(MouseButton but) const;
 
-    int mouseX() const
-    { return mMouseX; }
-    int mouseY() const
-    { return mMouseY; }
     const Vector2i mousePos() const
-    { return Vector2i(mouseX(), mouseY()); }
+    { return mMousePos; }
+
+    const Vector2i mouseForce() const
+    { return mMouseForce; }
 
 private:
     static bool mInitialised;
@@ -61,13 +60,18 @@ private:
     static void keyboardFunc(unsigned char key, int, int);
     static void keyboardUpFunc(unsigned char key, int, int);
     static void mouseFunc(int button, int state, int, int);
+    static void motionFunc(int x, int y);
     static void passiveMotionFunc(int x, int y);
     static void closeFunc();
 
     int mId;
     std::set<Key> mKeys;
     std::set<MouseButton> mMouseButtons;
-    int mMouseX, mMouseY;
+    Vector2i mMousePos;
+    Vector2i mLastMousePos;
+    Vector2i mMouseForce;
+    bool mMouseForceUpdated;
+    int mTimeSinceLastUpdate;
     bool mClosed;
 
     virtual void frame() { }

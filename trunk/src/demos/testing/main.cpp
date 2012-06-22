@@ -84,6 +84,7 @@ public:
     }
 
     void update() {
+        wzy::Engine& eng = wzy::Engine::singleton();
         auto cam = wzy::Engine::singleton().rootView()->camera();
 
         if (wzy::Engine::singleton().isPressed(wzy::Window::Key::w))
@@ -95,9 +96,14 @@ public:
         if (wzy::Engine::singleton().isPressed(wzy::Window::Key::d))
             cam->setPosition(cam->position() + wzy::Vector3f(0.0, 0.0, 0.1));
 
-        if (wzy::Engine::singleton().isPressed(wzy::Engine::Key::h)) {
-            cam->setRotation(cam->rotation() * wzy::Quaternionf(wzy::Degree(0.0), wzy::Degree(1.0), wzy::Radian(0.0)));
-        }
+        constexpr float sensitivity = 30.0;
+        auto rot = cam->rotation();
+
+        std::cout << "Camera rotation: Roll: " << wzy::Degree(rot.roll()).v() << ", Pitch: " << wzy::Degree(rot.pitch()).v() << ", Yaw: " << wzy::Degree(rot.yaw()).v() << std::endl;
+
+        cam->setRotation(cam->rotation() * wzy::Quaternionf(wzy::Degree(0.0),
+                                                            wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().x(),
+                                                            wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().y()));
     }
 
 private:
@@ -107,15 +113,12 @@ private:
 
 int main()
 try {
-    wzy::Quaternionf q(wzy::Degree(90.0), wzy::Degree(0.0), wzy::Degree(90.0));
-
-    print(wzy::getMatrix(q));
-
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
 
     eng.execute();
 
-} catch (const std::exception& ex) {
+} /*catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;
-}
+}*/
+catch (int i) { }
