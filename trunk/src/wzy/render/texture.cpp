@@ -241,5 +241,17 @@ const std::shared_ptr<Texture2D> textureFromImage(const Image& img) {
 }
 
 
+// -----------------------------------------------------
+const Vector2i Texture<BasicTexture::Type::Tex2D>::size() const {
+    bind();
+    GLint width = 0, height = 0;
+
+    glGetTexLevelParameteriv(getTexInfo(type()).target, 0, GL_TEXTURE_WIDTH, &width);
+    glGetTexLevelParameteriv(getTexInfo(type()).target, 0, GL_TEXTURE_WIDTH, &height);
+
+    return Vector2i(width, height);
+}
+
+
 }
 }

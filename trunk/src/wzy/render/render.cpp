@@ -18,7 +18,7 @@ void init() {
         glEnable(GL_TEXTURE_2D);
 
         glDepthFunc(GL_LESS);
-        glCullFace(GL_BACK);
+        //glCullFace(GL_BACK);
 
         initialised = true;
     }
@@ -29,6 +29,9 @@ void flush()
 
 void finish()
 { glFinish(); }
+
+void setViewport(const Vector2i& pos, const Vector2i& size)
+{ glViewport(pos.x(), pos.y(), size.x(), size.y()); }
 
 void clear()
 { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }

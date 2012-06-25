@@ -13,22 +13,27 @@ template <class Tlhs, class Trhs>
 const Quaternion<decltype(std::declval<Tlhs>() * std::declval<Trhs>())>
 operator*(const Quaternion<Tlhs>& lhs, const Quaternion<Trhs>& rhs) {
     Quaternion<decltype(std::declval<Tlhs>() * std::declval<Trhs>())> ret;
-    ret.setW(lhs.w() * rhs.w() - lhs.x() * rhs.x() - lhs.y() * rhs.y() - lhs.z() * rhs.z());
-    ret.setX(lhs.w() * rhs.x() + lhs.x() * rhs.w() + lhs.y() * rhs.z() - lhs.z() * rhs.y());
-    ret.setY(lhs.w() * rhs.y() - lhs.x() * rhs.z() + lhs.y() * rhs.w() + lhs.z() * rhs.x());
-    ret.setZ(lhs.w() * rhs.z() + lhs.x() * rhs.y() - lhs.y() * rhs.x() + lhs.z() * rhs.w());
+    ret.setX(lhs.w() * rhs.x()  +  lhs.x() * rhs.w()  +  lhs.y() * rhs.z()  -  lhs.z() * rhs.y());
+    ret.setY(lhs.w() * rhs.y()  +  lhs.y() * rhs.w()  +  lhs.z() * rhs.x()  -  lhs.x() * rhs.z());
+    ret.setZ(lhs.w() * rhs.z()  +  lhs.z() * rhs.w()  +  lhs.x() * rhs.y()  -  lhs.y() * rhs.x());
+    ret.setW(lhs.w() * rhs.w()  -  lhs.x() * rhs.x()  -  lhs.y() * rhs.y()  -  lhs.z() * rhs.z());
+
     return ret;
 }
 
 template <class Tlhs, class Trhs>
 const Vector3<Trhs> operator*(const Quaternion<Tlhs>& lhs, const Vector3<Trhs>& rhs) {
-    Vector3<Trhs> v(rhs);
-    normalise(v);
-    Quaternion<Tlhs> vecQuat(0.0, v.x(), v.y(), v.z());
-    vecQuat *= conjugate(lhs);
-    vecQuat = lhs * vecQuat;
-    return Vector3<Trhs>(vecQuat.x(), vecQuat.y(), vecQuat.z());
+    Vector3<Trhs> qvec(lhs.x(), lhs.y(), lhs.z());
+    Vector3<Trhs> uv(cross(qvec, rhs));
+    Vector3<Trhs> uuv(cross(qvec, uv));
+    uv *= 2.0 * lhs.w();
+    uuv *= 2.0;
+    return rhs + uv + uuv;
 }
+
+template <class Tlhs, class Trhs>
+const Vector3<Tlhs> operator*(const Vector3<Tlhs>& lhs, const Quaternion<Trhs>& rhs)
+{ return rhs * lhs; }
 
 
 

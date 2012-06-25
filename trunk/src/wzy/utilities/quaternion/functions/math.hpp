@@ -17,6 +17,16 @@ void identity(Quaternion<T>& quat) {
 }
 
 template <class T>
+void inverse(Quaternion<T>& quat) {
+    float norm = quat.w() * quat.w() + quat.x() * quat.x() + quat.y() * quat.y() + quat.z() * quat.z();
+    float invNorm = 1.0 / norm;
+    quat.setW(quat.w() * invNorm);
+    quat.setX(-quat.x() * invNorm);
+    quat.setY(-quat.y() * invNorm);
+    quat.setZ(-quat.z() * invNorm);
+}
+
+template <class T>
 float magnitude(const Quaternion<T>& quat)
 { return std::sqrt(quat.w() * quat.w() + quat.x() * quat.x() + quat.y() * quat.y() + quat.z() * quat.z()); }
 

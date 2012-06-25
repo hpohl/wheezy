@@ -22,8 +22,8 @@ Image::~Image() {
 void Image::draw(const UDim& position, const Vector2f& scale) {
     Matrix4f proj;
     orthographic(proj, 0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-    Matrix4f mdlview;
 
+    Matrix4f mdlview;
     auto sizeToDisplay = scale * this->scale() * size().currentRel();
     auto midtrans = Vector3f((sizeToDisplay / Vector2f(2.0, 2.0)).x(),
                              (sizeToDisplay / Vector2f(2.0, 2.0)).y(),

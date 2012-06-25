@@ -4,10 +4,18 @@
 #include <cmath>
 
 #include <wzy/utilities/helpers/operations.hpp>
+#include <wzy/utilities/vec/aliases.hpp>
 #include <wzy/utilities/vec/vecfwd.hpp>
 
 
 namespace wzy {
+
+template <class Tlhs, class Trhs>
+const Vector3<Tlhs> cross(const Vector3<Tlhs>& lhs, const Vector3<Trhs>& rhs) {
+    return Vector3<Tlhs>(lhs[1] * rhs[2] - lhs[2] * rhs[1],
+                         lhs[2] * rhs[0] - lhs[0] * rhs[2],
+                         lhs[0] * rhs[1] - lhs[1] * rhs[0]);
+}
 
 template <int n, class Tlhs, class Trhs>
 decltype(std::declval<Tlhs>() * std::declval<Trhs>())

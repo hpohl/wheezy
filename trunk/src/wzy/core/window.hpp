@@ -56,7 +56,7 @@ private:
     static std::map<int, Window*> mWindows;
 
     static void displayFunc();
-    static void reshapeFunc(int width, int height);
+    static void reshapeFunc(int, int);
     static void keyboardFunc(unsigned char key, int, int);
     static void keyboardUpFunc(unsigned char key, int, int);
     static void mouseFunc(int button, int state, int, int);
@@ -68,14 +68,14 @@ private:
     std::set<Key> mKeys;
     std::set<MouseButton> mMouseButtons;
     Vector2i mMousePos;
-    Vector2i mLastMousePos;
+    Vector2i mPreviousMousePos;
     Vector2i mMouseForce;
-    bool mMouseForceUpdated;
+    bool mMouseMoved;
     int mTimeSinceLastUpdate;
     bool mClosed;
 
     virtual void frame() { }
-    virtual void resized(const Vector2i& size) { }
+    virtual void resized() { }
     virtual void keyPressed(Key k) { }
     virtual void keyReleased(Key k) { }
     virtual void mousePressed(MouseButton but) { }

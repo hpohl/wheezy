@@ -49,6 +49,11 @@ const Engine::ConstStateStack Engine::states() const {
 
 
 // --------------------------------------
+void Engine::resized() {
+}
+
+
+// -----------------------------------------------
 void Engine::draw() {
     render::FrameBuffer::useDefault();
     render::clear();

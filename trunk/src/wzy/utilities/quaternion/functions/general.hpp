@@ -22,20 +22,39 @@ void assign(Quaternion<T>& quat, const TW& w, const TX& x, const TY& y, const TZ
 }
 
 template <class T>
+void assign(Quaternion<T>& quat, const Vector3f& axis, const Radian& angle) {
+    double sinA = std::sin(angle.v());
+    double cosA = std::cos(angle.v());
+
+    quat.setW(cosA);
+    quat.setX(axis.x() * sinA);
+    quat.setY(axis.y() * sinA);
+    quat.setZ(axis.z() * sinA);
+}
+
+template <class T>
 void assign(Quaternion<T>& quat, const Radian& roll, const Radian& pitch, const Radian& yaw) {
-    T sinRoll = std::sin(roll.v() / 2.0);
-    T cosRoll = std::cos(roll.v() / 2.0);
+    double angle = roll.v() * 0.5;
+    double sr = std::sin(angle);
+    double cr = std::cos(angle);
 
-    T sinPitch = std::sin(pitch.v() / 2.0);
-    T cosPitch = std::cos(pitch.v() / 2.0);
+    angle = pitch.v() * 0.5;
+    double sp = std::sin(angle);
+    double cp = std::cos(angle);
 
-    T sinYaw = std::sin(yaw.v() / 2.0);
-    T cosYaw = std::cos(yaw.v() / 2.0);
+    angle = yaw.v() * 0.5;
+    double sy = std::sin(angle);
+    double cy = std::cos(angle);
 
-    quat.setW(cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw);
-    quat.setX(sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw);
-    quat.setY(cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw);
-    quat.setZ(cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw);
+    double cpcy = cp * cy;
+    double spcy = sp * cy;
+    double cpsy = cp * sy;
+    double spsy = sp * sy;
+
+    quat.setW(cr * cpcy + sr * spsy);
+    quat.setX(sr * cpcy - cr * spsy);
+    quat.setY(cr * spcy + sr * cpsy);
+    quat.setZ(cr * cpsy - sr * spcy);
 
     normalise(quat);
 }

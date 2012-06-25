@@ -26,14 +26,18 @@ void View::draw(const UDim& position,
     render::FrameBuffer::Pusher pusher(mFB);
 
     Matrix4f transf;
+    auto rot = camera()->orientation();
+    inverse(rot);
+    rotate(transf, rot);
     translate(transf, -camera()->position());
-    rotate(transf, camera()->rotation());
 
+    render::setViewport(Vector2i(0, 0), mFB->colourAttachment(0)->size());
     render::clear();
     Engine::singleton().rootNode()->draw(camera()->projection(), transf);
 
     pusher.pop();
 
+    render::setViewport(Vector2i(0, 0), render::FrameBuffer::currentSize());
     Image::draw(position, scale);
 }
 

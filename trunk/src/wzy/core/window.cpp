@@ -26,7 +26,7 @@ Window::MouseButton glut2MouseButton(int button) {
 
 
 // -----------------------------------------------
-Vector2i Window::defaultSize = {512, 512};
+Vector2i Window::defaultSize = {1024, 600};
 bool Window::mInitialised = false;
 std::map<int, Window*> Window::mWindows;
 
@@ -120,18 +120,19 @@ void Window::displayFunc() {
     Window& win = currentWindow();
     win.mTimeSinceLastUpdate = glutGet(GLUT_ELAPSED_TIME) - win.mTimeSinceLastUpdate;
 
-    if (!win.mMouseForceUpdated)
-        win.mMouseForce = Vector2i(0, 0);
+    if (win.mMouseMoved)
+        win.mMouseForce = win.mMousePos - win.mPreviousMousePos;
     else
-        win.mMouseForceUpdated = false;
+        win.mMouseForce = Vector2i(0, 0);
+    win.mMouseMoved = false;
 
     win.frame();
     glutSwapBuffers();
     glutPostRedisplay();
 }
 
-void Window::reshapeFunc(int width, int height) {
-    currentWindow().resized({width, height});
+void Window::reshapeFunc(int, int) {
+    currentWindow().resized();
 }
 
 void Window::keyboardFunc(unsigned char key, int, int) {
@@ -165,20 +166,20 @@ void Window::mouseFunc(int button, int state, int, int) {
 
 void Window::motionFunc(int x, int y) {
     Window& win = currentWindow();
-    win.mLastMousePos = win.mMousePos;
+    win.mPreviousMousePos = win.mMousePos;
     win.mMousePos.setX(x);
     win.mMousePos.setY(y);
-    win.mMouseForce = win.mMousePos - win.mLastMousePos;
-    win.mMouseForceUpdated = true;
+    win.mMouseMoved = true;
     win.mouseMoved({x, y});
 }
 
 void Window::passiveMotionFunc(int x, int y) {
-/*    Window& win = currentWindow();
-    win.mMouseForce = Vector2i(x, y) - win.mMousePos;
+    Window& win = currentWindow();
+    win.mPreviousMousePos = win.mMousePos;
     win.mMousePos.setX(x);
     win.mMousePos.setY(y);
-    win.mouseMoved({x, y});*/
+    win.mMouseMoved = true;
+    win.mouseMoved({x, y});
 }
 
 void Window::closeFunc() {
@@ -192,9 +193,9 @@ Window::Window() :
     mKeys(),
     mMouseButtons(),
     mMousePos(),
-    mLastMousePos(),
+    mPreviousMousePos(),
     mMouseForce(),
-    mMouseForceUpdated(false),
+    mMouseMoved(false),
     mTimeSinceLastUpdate(0),
     mClosed(false) {
 
@@ -218,7 +219,7 @@ Window::Window() :
     glutKeyboardUpFunc(keyboardUpFunc);
     glutMouseFunc(mouseFunc);
     glutMotionFunc(motionFunc);
-    //glutPassiveMotionFunc(passiveMotionFunc);
+    glutPassiveMotionFunc(passiveMotionFunc);
     glutCloseFunc(closeFunc);
 
     mWindows.insert(std::make_pair(mId, this));

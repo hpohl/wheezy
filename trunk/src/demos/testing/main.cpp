@@ -87,23 +87,33 @@ public:
         wzy::Engine& eng = wzy::Engine::singleton();
         auto cam = wzy::Engine::singleton().rootView()->camera();
 
-        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::w))
-            cam->setPosition(cam->position() + wzy::Vector3f(-0.1, 0.0, 0.0));
-        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::e))
-            cam->setPosition(cam->position() + wzy::Vector3f(0.0, 0.0, -0.1));
-        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::r))
-            cam->setPosition(cam->position() + wzy::Vector3f(0.1, 0.0, 0.0));
-        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::d))
-            cam->setPosition(cam->position() + wzy::Vector3f(0.0, 0.0, 0.1));
-
         constexpr float sensitivity = 30.0;
-        auto rot = cam->rotation();
+        constexpr float speed = 10.0;
+        float rat = eng.timeRatio();
+        auto rot = cam->orientation();
 
-        std::cout << "Camera rotation: Roll: " << wzy::Degree(rot.roll()).v() << ", Pitch: " << wzy::Degree(rot.pitch()).v() << ", Yaw: " << wzy::Degree(rot.yaw()).v() << std::endl;
+        cam->setFovY(100.0);
 
-        cam->setRotation(cam->rotation() * wzy::Quaternionf(wzy::Degree(0.0),
-                                                            wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().x(),
-                                                            wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().y()));
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::w))
+            cam->setPosition(cam->position() + rot * wzy::Vector3f(-speed, 0.0, 0.0) * rat);
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::e))
+            cam->setPosition(cam->position() + rot * wzy::Vector3f(0.0, 0.0, -speed) * rat);
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::r))
+            cam->setPosition(cam->position() + rot * wzy::Vector3f(speed, 0.0, 0.0) * rat);
+        if (wzy::Engine::singleton().isPressed(wzy::Window::Key::d))
+            cam->setPosition(cam->position() + rot * wzy::Vector3f(0.0, 0.0, speed) * rat);
+
+
+        if (eng.isPressed(wzy::Engine::MouseButton::Left)) {
+            wzy::Quaternionf toRotate(wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().y(),
+                                      wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().x(),
+                                      wzy::Degree(0.0));
+
+            cam->setOrientation(toRotate * cam->orientation());
+
+            std::cout << toRotate.z() << std::endl;
+        }
+
     }
 
 private:
@@ -115,7 +125,6 @@ int main()
 try {
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
-
     eng.execute();
 
 } /*catch (const std::exception& ex) {

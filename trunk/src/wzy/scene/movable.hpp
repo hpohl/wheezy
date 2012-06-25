@@ -15,7 +15,7 @@ public:
             const Quaternionf& rotation = Quaternionf()) :
         mPosition(position),
         mScale(scale),
-        mRotation(rotation) { }
+        mOrientation(rotation) { }
 
     virtual ~Movable() = 0;
 
@@ -31,11 +31,11 @@ public:
     void setScale(const Vector3f& scale)
     { mScale = scale; }
 
-    const Quaternionf rotation() const
-    { return mRotation; }
+    const Quaternionf orientation() const
+    { return mOrientation; }
 
-    void setRotation(const Quaternionf& rot)
-    { mRotation = rot; }
+    void setOrientation(const Quaternionf& rot)
+    { mOrientation = rot; }
 
 
     const Matrix4f transformation() const;
@@ -43,7 +43,7 @@ public:
 private:
     Vector3f mPosition;
     Vector3f mScale;
-    Quaternionf mRotation;
+    Quaternionf mOrientation;
 };
 
 }

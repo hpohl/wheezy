@@ -35,6 +35,9 @@ public:
     const std::chrono::time_point<std::chrono::system_clock> timeStarted() const
     { return mEngineStarted; }
 
+    const std::chrono::milliseconds timeSinceStart() const
+    { return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timeStarted()); }
+
     const std::chrono::time_point<std::chrono::system_clock> lastFrameTime() const
     { return mLastFrameTime; }
 
@@ -92,6 +95,8 @@ private:
     std::shared_ptr<SceneNode> mRootNode;
     std::shared_ptr<gui::Object> mRootGUIObject;
     std::shared_ptr<gui::View> mRootView;
+
+    void resized() override;
 
     void draw();
 };

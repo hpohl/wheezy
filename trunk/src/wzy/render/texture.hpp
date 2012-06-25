@@ -130,6 +130,16 @@ public:
         BasicTexture(ttype, std::forward<Args>(args)...) { }
 };
 
+template <>
+class Texture<BasicTexture::Type::Tex2D> : public BasicTexture {
+public:
+    template <class... Args>
+    Texture(Args&&... args) :
+        BasicTexture(BasicTexture::Type::Tex2D, std::forward<Args>(args)...) { }
+
+    const Vector2i size() const;
+};
+
 typedef Texture<BasicTexture::Type::Tex2D> Texture2D;
 
 

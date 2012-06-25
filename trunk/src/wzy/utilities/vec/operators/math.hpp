@@ -25,6 +25,15 @@ operator op(const Vector<n, Tlhs>& lhs, const Trhs& rhs) { \
     for (int i = 0; i < n; ++i) \
         ret[i] = lhs[i] op rhs; \
     return ret; \
+} \
+\
+template <int n, class Tlhs, class Trhs> \
+inline const Vector<n, decltype(std::declval<Tlhs>() op std::declval<Trhs>())> \
+operator op(const Trhs& rhs, const Vector<n, Tlhs>& lhs) { \
+   Vector<n, decltype(std::declval<Tlhs>() op std::declval<Trhs>())> ret; \
+    for (int i = 0; i < n; ++i) \
+        ret[i] = rhs op lhs[i]; \
+    return ret; \
 }
 
 WZY_UTILITIES_VEC_OPERATORS_MATH_DEFINE_OPERATOR(+);
@@ -39,6 +48,13 @@ template <int n, class Tlhs, class Trhs> \
 Vector<n, Tlhs>& operator op(Vector<n, Tlhs>& lhs, const Vector<n, Trhs>& rhs) { \
     for (int i = 0; i < n; ++i) \
         lhs[i] op rhs[i]; \
+    return lhs; \
+} \
+\
+template <int n, class Tlhs, class Trhs> \
+Vector<n, Tlhs>& operator op(Vector<n, Tlhs>& lhs, const Trhs& rhs) { \
+    for (int i = 0; i < n; ++i) \
+        lhs[i] op rhs; \
     return lhs; \
 }
 

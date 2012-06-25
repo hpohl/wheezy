@@ -54,13 +54,13 @@ public:
     { return Radian(std::atan2(2.0 * (mW * mZ + mX * mY), 1.0 - 2.0 * (mY * mY + mZ * mZ))); }
 
     void setRoll(const Radian& roll)
-    { (*this) = Quaternion(Radian(-this->roll() + roll), Radian(0.0), Radian(0.0)); }
+    { (*this) *= Quaternion(Radian(-this->roll() + roll), Radian(0.0), Radian(0.0)); }
 
     void setPitch(const Radian& pitch)
-    { (*this) = Quaternion(Radian(0.0), Radian(-this->pitch() + pitch), Radian(0.0)); }
+    { (*this) *= Quaternion(Radian(0.0), Radian(-this->pitch() + pitch), Radian(0.0)); }
 
     void setYaw(const Radian& yaw)
-    { (*this) = Quaternion(Radian(0.0), Radian(0.0), Radian(-this->yaw() + yaw)); }
+    { (*this) *= Quaternion(Radian(0.0), Radian(0.0), Radian(-this->yaw() + yaw)); }
 
 
 private:
