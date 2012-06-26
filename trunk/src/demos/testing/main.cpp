@@ -58,7 +58,7 @@ const std::shared_ptr<wzy::Model> createModel() {
     mdl->material()->setProgram(prog);
     //mdl->material()->textures()->push_back(wzy::render::textureFromImage(wzy::Image("images/landscape.jpg")));*/
 
-    auto mdl = wzy::loadFromOBJ("models/altair.obj");
+    auto mdl = wzy::loadFromOBJ("models/world.obj");
 
     std::vector<wzy::Vector4f> colours(mdl->vertices()->size(), wzy::Vector4f(1.0, 0.0, 0.0, 1.0));
 
@@ -80,7 +80,10 @@ public:
         mEnt(std::make_shared<wzy::Entity>(mModel)) {
         wzy::Engine::singleton().rootNode()->attach(mEnt);
 
-        mEnt->setPosition(wzy::Vector3f(0.0, 0.0, -5.0));
+        mEnt->setPosition(wzy::Vector3f(-5.0, -1.0, 0.0));
+
+        auto cam = wzy::Engine::singleton().rootView()->camera();
+        cam->setOrientation(wzy::Quaternionf(wzy::Degree(0.0), wzy::Degree(90.0), wzy::Degree(0.0)));
     }
 
     void update() {
@@ -92,7 +95,7 @@ public:
         float rat = eng.timeRatio();
         auto rot = cam->orientation();
 
-        cam->setFovY(100.0);
+        cam->setFovY(70.0);
 
         if (wzy::Engine::singleton().isPressed(wzy::Window::Key::w))
             cam->setPosition(cam->position() + rot * wzy::Vector3f(-speed, 0.0, 0.0) * rat);
@@ -104,15 +107,13 @@ public:
             cam->setPosition(cam->position() + rot * wzy::Vector3f(0.0, 0.0, speed) * rat);
 
 
-        if (eng.isPressed(wzy::Engine::MouseButton::Left)) {
-            wzy::Quaternionf toRotate(wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().y(),
-                                      wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().x(),
+        //if (eng.isPressed(wzy::Engine::MouseButton::Left)) {
+            wzy::Quaternionf toRotate(-wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().y(),
+                                      -wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().x(),
                                       wzy::Degree(0.0));
 
-            cam->setOrientation(toRotate * cam->orientation());
-
-            std::cout << toRotate.z() << std::endl;
-        }
+            cam->setOrientation(cam->orientation() * toRotate);
+        //}
 
     }
 

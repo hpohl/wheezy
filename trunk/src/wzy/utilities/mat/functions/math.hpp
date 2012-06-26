@@ -34,8 +34,8 @@ void perspective(Matrix<4, 4, T>& m, float fovy, float aspect, float zNear, floa
     m[1][1] = 1.0 / std::tan(degreesToRadians(fovy / 2.0));
     m[2][2] = -((zFar + zNear) / (zFar - zNear));
     m[2][3] = -((2.0 * zNear * zFar) / (zFar - zNear));
-    m[3][2] = -1;
-    m[3][3] = 0;
+    m[3][2] = -1.0;
+    m[3][3] = 0.0;
 }
 
 template <int rows, int cols, class T, int n, class Tv>

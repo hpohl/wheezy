@@ -22,7 +22,7 @@ void AbstractEntity::draw(const Matrix4f& projection, const Matrix4f& transform)
     AbstractSceneNode::draw(projection, transform);
 
     mMaterial->use();
-    mMaterial->program()->uniform("wzyModelViewMatrix", transform * transformation());
+    mMaterial->program()->uniform("wzyModelViewMatrix", transformation() * transform);
     mMaterial->program()->uniform("wzyProjectionMatrix", projection);
     mModel->renderData()->draw();
 }
