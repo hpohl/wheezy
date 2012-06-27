@@ -22,7 +22,7 @@ void AbstractSceneNode::detach(const std::shared_ptr<AbstractSceneNode>& node) {
 
 void AbstractSceneNode::draw(const Matrix4f& projection, const Matrix4f& transform) {
     for (auto node : mChildren)
-        node->draw(projection, transformation() * transform);
+        node->draw(projection, transform * transformation());
 }
 
 }

@@ -118,13 +118,14 @@ Window& Window::currentWindow() {
 
 void Window::displayFunc() {
     Window& win = currentWindow();
-    win.mTimeSinceLastUpdate = glutGet(GLUT_ELAPSED_TIME) - win.mTimeSinceLastUpdate;
 
     if (win.mMouseMoved)
         win.mMouseForce = win.mMousePos - win.mPreviousMousePos;
     else
         win.mMouseForce = Vector2i(0, 0);
     win.mMouseMoved = false;
+
+
 
     win.frame();
     glutSwapBuffers();
@@ -196,7 +197,6 @@ Window::Window() :
     mPreviousMousePos(),
     mMouseForce(),
     mMouseMoved(false),
-    mTimeSinceLastUpdate(0),
     mClosed(false) {
 
     if (!mInitialised) {

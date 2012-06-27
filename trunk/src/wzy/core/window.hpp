@@ -1,6 +1,7 @@
 #ifndef WZY_CORE_WINDOW_HPP
 #define WZY_CORE_WINDOW_HPP
 
+#include <chrono>
 #include <map>
 #include <set>
 
@@ -71,7 +72,6 @@ private:
     Vector2i mPreviousMousePos;
     Vector2i mMouseForce;
     bool mMouseMoved;
-    int mTimeSinceLastUpdate;
     bool mClosed;
 
     virtual void frame() { }

@@ -13,6 +13,7 @@
 #include <wzy/render/program.hpp>
 #include <wzy/render/shader.hpp>
 #include <wzy/render/texture.hpp>
+#include <wzy/resource/package.hpp>
 #include <wzy/utilities/general.hpp>
 #include <wzy/utilities/vec.hpp>
 
@@ -73,6 +74,7 @@ const std::shared_ptr<wzy::Model> createModel() {
     return mdl;
 }
 
+
 class TestingState : public wzy::State {
 public:
     TestingState() :
@@ -90,7 +92,7 @@ public:
         wzy::Engine& eng = wzy::Engine::singleton();
         auto cam = wzy::Engine::singleton().rootView()->camera();
 
-        constexpr float sensitivity = 30.0;
+        constexpr float sensitivity = 10.0;
         constexpr float speed = 10.0;
         float rat = eng.timeRatio();
         auto rot = cam->orientation();
@@ -107,13 +109,13 @@ public:
             cam->setPosition(cam->position() + rot * wzy::Vector3f(0.0, 0.0, speed) * rat);
 
 
-        //if (eng.isPressed(wzy::Engine::MouseButton::Left)) {
+        if (eng.isPressed(wzy::Engine::MouseButton::Left)) {
             wzy::Quaternionf toRotate(-wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().y(),
                                       -wzy::Degree(sensitivity) * eng.timeRatio() * eng.mouseForce().x(),
                                       wzy::Degree(0.0));
 
             cam->setOrientation(cam->orientation() * toRotate);
-        //}
+        }
 
     }
 
@@ -124,9 +126,14 @@ private:
 
 int main()
 try {
-    wzy::Engine& eng = wzy::Engine::singleton();
+    auto pkg = std::make_shared<wzy::Package>("test", wzy::Package::Version(4, 0, 1));
+    wzy::Package::write(pkg);
+
+    wzy::Package::load("test");
+
+    /*wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
-    eng.execute();
+    eng.execute();*/
 
 } /*catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;

@@ -9,10 +9,12 @@
 namespace wzy {
 namespace gui {
 
-View::View(const UDim& position,
+View::View(const std::shared_ptr<AbstractSceneNode>& node,
+           const UDim& position,
            const UDim& size,
            const Vector2i& frameBufferSize) :
     Image(position, size),
+    mSceneNode(validate(node)),
     mFB(new render::FrameBuffer(frameBufferSize == Vector2i(0, 0) ? size.currentAbs() : frameBufferSize)),
     mCamera(new Camera) {
 
@@ -33,7 +35,7 @@ void View::draw(const UDim& position,
 
     render::setViewport(Vector2i(0, 0), mFB->colourAttachment(0)->size());
     render::clear();
-    Engine::singleton().rootNode()->draw(camera()->projection(), transf);
+    mSceneNode->draw(camera()->projection(), transf);
 
     pusher.pop();
 

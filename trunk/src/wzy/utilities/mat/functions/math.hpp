@@ -13,6 +13,26 @@
 namespace wzy {
 
 template <class T>
+void frustum(Matrix<4, 4, T>& m,
+             float left,
+             float right,
+             float bottom,
+             float top,
+             float zNear,
+             float zFar) {
+    identity(m);
+
+    m[0][0] = (2.0 * zNear) / (right - left);
+    m[0][2] = (right + left) / (right - left);
+    m[1][1] = (2.0 * zNear) / (top - bottom);
+    m[1][2] = (top + bottom) / (top - bottom);
+    m[2][2] = -(zFar + zNear) / (zFar - zNear);
+    m[2][3] = -(2.0 * zFar * zNear) / (zFar - zNear);
+    m[3][2] = -1.0;
+    m[3][3] = 0.0;
+}
+
+template <class T>
 void orthographic(Matrix<4, 4, T>& m,
                   float left, float right,
                   float bottom, float top,
@@ -26,6 +46,16 @@ void orthographic(Matrix<4, 4, T>& m,
     m[2][2] = -2.0 / (farVal - nearVal);
     m[2][3] = -(farVal + nearVal) / (farVal - nearVal);
 }
+
+/*template <class T>
+void perspective(Matrix<4, 4, T>& m, float fovy, float aspect, float zNear, float zFar) {
+    float bottom = zNear * std::tan(fovy / 2.0);
+    float top = -bottom;
+    float left = bottom * aspect;
+    float right = top * aspect;
+
+    frustum(m, left, right, bottom, top, zNear, zFar);
+}*/
 
 template <class T>
 void perspective(Matrix<4, 4, T>& m, float fovy, float aspect, float zNear, float zFar) {

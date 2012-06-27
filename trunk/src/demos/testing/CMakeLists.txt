@@ -3,6 +3,6 @@ main.cpp
 )
 
 target_link_libraries(dtesting
-wzycore wzymedia wzyrender wzyscene
+wzycore wzymedia wzyrender wzyresource wzyscene
 GL GLU
 )
