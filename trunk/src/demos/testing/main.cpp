@@ -126,10 +126,15 @@ private:
 
 int main()
 try {
-    auto pkg = std::make_shared<wzy::Package>("test", wzy::Package::Version(4, 0, 1));
+    auto pkg = std::make_shared<wzy::Package>("test", wzy::Version(4, 0, 1));
+
+    pkg->addItem(std::make_shared<wzy::UniversalItem>("item", "Hi, wazzup?"));
+
     wzy::Package::write(pkg);
 
-    wzy::Package::load("test");
+    pkg = wzy::Package::load("test");
+
+    //std::cout << pkg->items()[0]->content() << std::endl;
 
     /*wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();

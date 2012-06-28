@@ -2,6 +2,7 @@
 #define WZY_UTILITIES_GENERAL_HPP
 
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 
@@ -28,6 +29,13 @@ const std::shared_ptr<T>& validate(const std::shared_ptr<T>& ptr) {
     if (!ptr)
         throw Exception("Invalid shared_ptr of type " + std::string(typeid(T()).name()) + " detected.");
     return ptr;
+}
+
+template <class T>
+const std::string toString(const T& val) {
+    std::stringstream ss;
+    ss << val;
+    return ss.str();
 }
 
 }
