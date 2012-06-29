@@ -25,17 +25,17 @@ public:
     const Version version() const
     { return mVersion; }
 
-    void addItem(const std::shared_ptr<BasicItem>& item)
+    void addItem(const std::shared_ptr<Item>& item)
     { mItems.push_back(item); }
     void removeItem(const std::string& name);
 
-    const std::vector<std::shared_ptr<BasicItem> > items()
+    const std::vector<std::shared_ptr<Item> > items()
     { return mItems; }
 
 private:
     std::string mName;
     Version mVersion;
-    std::vector<std::shared_ptr<BasicItem> > mItems;
+    std::vector<std::shared_ptr<Item> > mItems;
 };
 
 }

@@ -35,10 +35,10 @@ public:
 
 
     // -----------------------------------------------
-    T& operator[](size_t i)
+    T& operator[](std::size_t i)
     { assert(i < n); return mData[i]; }
 
-    const T& operator[](size_t i) const
+    const T& operator[](std::size_t i) const
     { assert(i < n); return mData[i]; }
 
 

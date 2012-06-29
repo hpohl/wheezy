@@ -3,8 +3,8 @@
 
 #include <chrono>
 #include <memory>
+#include <stack>
 #include <typeindex>
-#include <vector>
 
 #include <wzy/core/state.hpp>
 #include <wzy/core/window.hpp>
@@ -18,8 +18,7 @@ namespace wzy {
 class Engine final : public Singleton<Engine>,
                      public Window {
 public:
-    typedef std::vector<std::shared_ptr<State> > StateStack;
-    typedef std::vector<std::shared_ptr<const State> > ConstStateStack;
+    typedef std::stack<std::shared_ptr<State> > StateStack;
 
 
     // ------------------------------------------------
@@ -55,26 +54,22 @@ public:
     const StateStack states()
     { return mStates; }
 
-    const ConstStateStack states() const;
-
     const StateStack::value_type current()
-    { return mStates.back(); }
-
-    template <class StateType>
-    bool stateInStack() const;
+    { return mStates.top(); }
 
     template <class StateType, class... Args>
     void pushState(Args&&... args) {
         static_assert(IsState<StateType>::value, "You can only push states.");
-        mStates.push_back(std::shared_ptr<State>(new StateType(std::forward<Args>(args)...)));
+        mStates.push(std::shared_ptr<State>(new StateType(std::forward<Args>(args)...)));
     }
 
     void popState()
-    { mStates.erase(mStates.end()); }
+    { mStates.pop(); }
 
     template <class StateType, class... Args>
     void popAllAndPush(Args&&... args) {
-        mStates.clear();
+        while (!mStates.empty())
+            mStates.pop();
         pushState<StateType>(std::forward<Args>(args)...);
     }
 
@@ -104,14 +99,6 @@ private:
     void draw();
 };
 
-
-template <class StateType>
-bool Engine::stateInStack() const {
-    for (auto val : mStates)
-        if (typeid(*val) == typeid(*val))
-            return true;
-    return false;
-}
 
 }
 

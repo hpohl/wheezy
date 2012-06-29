@@ -6,7 +6,7 @@
 namespace wzy {
 
 
-const std::shared_ptr<BasicItem> BasicItem::create(int id,
+const std::shared_ptr<Item> Item::create(int id,
                                                    const std::string& name,
                                                    const std::string& content) {
     auto it = creators().find(id);
@@ -19,8 +19,16 @@ const std::shared_ptr<BasicItem> BasicItem::create(int id,
 
 
 // ----------------------------------------------
-BasicItem::~BasicItem() {
+Item::~Item() {
 }
+
+
+// ---------------------------------------------
+bool UniversalItem::mReg = Item::registerCreator(-1, create);
+
+
+// ----------------------------------------------------------
+//bool ImageItem::mReg = Item::registerCreator(-2, create);
 
 
 }

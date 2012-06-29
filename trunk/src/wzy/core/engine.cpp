@@ -36,16 +36,14 @@ void Engine::frame() {
     mLastFrameDuration = std::chrono::duration_cast<std::chrono::milliseconds>(now - mLastFrameTime);
     mLastFrameTime = now;
 
-    for (std::shared_ptr<State>& state : mStates)
-        state->update();
+    auto states = mStates;
+
+    while (!states.empty()) {
+        states.top()->update();
+        states.pop();
+    }
+
     draw();
-}
-
-
-// ---------------------------------------
-const Engine::ConstStateStack Engine::states() const {
-    ConstStateStack ret(mStates.begin(), mStates.end());
-    return ret;
 }
 
 

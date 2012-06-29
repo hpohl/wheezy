@@ -46,17 +46,17 @@ public:
     void unbind() const;
     bool bound() const;
 
-    void setData(size_t size, const void* data);
-    void updateData(size_t offset, size_t size, const void* data);
+    void setData(std::size_t size, const void* data);
+    void updateData(std::size_t offset, std::size_t size, const void* data);
 
-    size_t size() const
+    std::size_t size() const
     { return mSize; }
 
 private:
     unsigned int mName;
     const Type mType;
     const Usage mUsage;
-    size_t mSize;
+    std::size_t mSize;
 };
 
 
@@ -97,10 +97,10 @@ public:
     void setData(const std::vector<T>& data)
     { Parent::setData(data.size() * sizeof(T), data.data()); }
 
-    void setData(size_t offset, std::vector<T>& data)
+    void setData(std::size_t offset, std::vector<T>& data)
     { Parent::setData(offset * sizeof(T), data.size() * sizeof(T), data.data()); }
 
-    size_t count() const
+    std::size_t count() const
     { return Parent::size() / sizeof(T); }
 };
 

@@ -40,10 +40,10 @@ public:
     bool valid() const;
     void validate() const;
 
-    const std::shared_ptr<const Texture2D> colourAttachment(size_t i) const
+    const std::shared_ptr<const Texture2D> colourAttachment(std::size_t i) const
     { return mColourAttachments.at(i); }
 
-    const std::shared_ptr<Texture2D> colourAttachment(size_t i)
+    const std::shared_ptr<Texture2D> colourAttachment(std::size_t i)
     { return mColourAttachments.at(i); }
 
 private:

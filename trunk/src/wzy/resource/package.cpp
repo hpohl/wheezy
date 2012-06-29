@@ -24,7 +24,7 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
         throw Exception("Package " + name + " is not a valid package.");
 
     // Read name length & name
-    size_t nameLen = 0;
+    std::size_t nameLen = 0;
     inf.read(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
 
     std::string pkgname(nameLen, 0);
@@ -39,12 +39,12 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
     inf.read(reinterpret_cast<char*>(&vers), sizeof(Version));
 
     // Read the number of items
-    size_t numItems = 0;
+    std::size_t numItems = 0;
     inf.read(reinterpret_cast<char*>(&numItems), sizeof(numItems));
 
     // Read item locations
-    std::vector<size_t> begins(numItems);
-    inf.read(reinterpret_cast<char*>(&begins[0]), numItems * sizeof(size_t));
+    std::vector<std::size_t> begins(numItems);
+    inf.read(reinterpret_cast<char*>(&begins[0]), numItems * sizeof(std::size_t));
 
     // Create package
     auto pkg = std::make_shared<Package>(name, vers);
@@ -60,14 +60,14 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
         inf.read(reinterpret_cast<char*>(&id), sizeof(id));
 
         // Read item name length & name
-        size_t itmNameLen = 0;
+        std::size_t itmNameLen = 0;
         inf.read(reinterpret_cast<char*>(&itmNameLen), sizeof(itmNameLen));
 
         std::string itmName(itmNameLen, 0);
         inf.read(&itmName[0], itmNameLen);
 
         // Read item size
-        size_t size = 0;
+        std::size_t size = 0;
         inf.read(reinterpret_cast<char*>(&size), sizeof(size));
 
         // Read item content
@@ -75,7 +75,7 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
         inf.read(&data[0], size);
 
         // Add item to package
-        pkg->addItem(BasicItem::create(id, itmName, data));
+        pkg->addItem(Item::create(id, itmName, data));
     }
 
     return pkg;
@@ -92,7 +92,7 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
     ouf << "WZYPKG";
 
     // Write package name length and name
-    size_t len = pkg->name().length();
+    std::size_t len = pkg->name().length();
     ouf.write(reinterpret_cast<char*>(&len), sizeof(len));
     ouf << pkg->name();
 
@@ -101,12 +101,12 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
     ouf.write(reinterpret_cast<char*>(&vers), sizeof(Version));
 
     // Write item count
-    size_t count = pkg->mItems.size();
+    std::size_t count = pkg->mItems.size();
     ouf.write(reinterpret_cast<char*>(&count), sizeof(count));
 
     // Write item locations
     auto items = pkg->mItems;
-    size_t begin = ouf.tellp() + static_cast<decltype(ouf.tellp())>(items.size() * sizeof(begin));
+    std::size_t begin = ouf.tellp() + static_cast<decltype(ouf.tellp())>(items.size() * sizeof(begin));
 
     for (auto itm : items) {
         ouf.write(reinterpret_cast<char*>(&begin), sizeof(begin));
@@ -122,12 +122,12 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
         ouf.write(reinterpret_cast<char*>(&id), sizeof(id));
 
         // Write item name length & name
-        size_t nameLen = itm->name().length();
+        std::size_t nameLen = itm->name().length();
         ouf.write(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
         ouf << itm->name();
 
         // Write item size
-        size_t size = itm->size();
+        std::size_t size = itm->size();
         ouf.write(reinterpret_cast<char*>(&size), sizeof(size));
 
         // Write item content
@@ -149,7 +149,7 @@ Package::~Package() {
 // ---------------------------------------------
 void Package::removeItem(const std::string& name) {
     auto it = std::find_if(mItems.begin(), mItems.end(),
-                           [&](const std::shared_ptr<BasicItem>& itm) -> bool { return itm->name() == name; });
+                           [&](const std::shared_ptr<Item>& itm) -> bool { return itm->name() == name; });
 
     if (it == mItems.end())
         throw Exception("Unable to find item " + name + " in package " + this->name() + ".");

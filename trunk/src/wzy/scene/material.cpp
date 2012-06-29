@@ -20,7 +20,7 @@ void Material::use() {
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9
         };
 
-        for (size_t i = 0; i < mTextures->size(); ++i) {
+        for (std::size_t i = 0; i < mTextures->size(); ++i) {
             auto tex = (*mTextures)[i];
             tex->activateSlot(i);
             tex->bind();

@@ -27,74 +27,104 @@ Image::Format extensionToFormat(const std::string& ext) {
     throw Exception("Unknown image file extension.");
 }
 
+FIBITMAP* load(std::istream& is, const Image::Format& format, std::size_t size) {
+    std::string content(size, 0);
+    is.read(&content[0], size);
+    if (!is.good())
+        throw Exception("Error while loading image data from stream.");
+
+    std::unique_ptr<FIMEMORY, void(*)(FIMEMORY*)>
+            mem(FreeImage_OpenMemory(reinterpret_cast<BYTE*>(&content[0]), size), FreeImage_CloseMemory);
+
+    auto ptr = FreeImage_LoadFromMemory(formatToFI(format), mem.get());
+
+    if (!ptr)
+        throw Exception("Unable to load image.");
+
+    return ptr;
+}
+
+void save(FIBITMAP* bitmap, std::ostream& os, const Image::Format& format) {
+    std::unique_ptr<FIMEMORY, void(*)(FIMEMORY*)> mem(FreeImage_OpenMemory(), FreeImage_CloseMemory);
+    if (!FreeImage_SaveToMemory(formatToFI(format), bitmap, mem.get()))
+        throw Exception("Unable to save image.");
+    char* data = nullptr;
+    DWORD count = 0;
+    FreeImage_AcquireMemory(mem.get(), reinterpret_cast<BYTE**>(&data), &count);
+    os.write(data, count);
+    if (!os.good())
+        throw Exception("Unable to save image.");
+}
+
+FIBITMAP* clone(const FIBITMAP* bitmap) {
+    auto ptr = FreeImage_Clone(const_cast<FIBITMAP*>(bitmap));
+
+    if (!ptr)
+        throw Exception("Unable to clone bitmap.");
+    return ptr;
+}
+
 }
 
 
 // ----------------------------------------------
-struct Image::Private {
-    FIBITMAP* bitmap = nullptr;
+class Image::Private {
+public:
+    Private(FIBITMAP* bitmap) :
+        mBitmap(bitmap, FreeImage_Unload) { }
+
+    FIBITMAP* bitmap()
+    { return mBitmap.get(); }
+
+    void setBitmap(FIBITMAP* bitmap)
+    { mBitmap.reset(bitmap, FreeImage_Unload); }
+
+private:
+    std::shared_ptr<FIBITMAP> mBitmap;
 };
 
 
 // ---------------------------------------
-Image::Image(const std::string& fileName) :
-    mPrivate(new Private) {
-
-    mPrivate->bitmap = FreeImage_Load(formatToFI(extensionToFormat(getFileExtension(fileName))), fileName.c_str());
-
-    if (!mPrivate->bitmap)
-        throw Exception("Unable to create image from file " + fileName + ".");
-
-    int curbpp = bpp();
-    if (curbpp != 8 && curbpp != 24 && curbpp != 32) {
-        FreeImage_Unload(mPrivate->bitmap);
-        throw Exception("Images have to be 8-, 24- or 32-bit.");
-    }
+Image::Image(std::istream& is, const Format& format, std::size_t size) :
+    mPrivate(new Private(wzy::load(is, format, size))) {
 }
 
 Image::Image(const Image& other) :
-    mPrivate(new Private) {
-
-    mPrivate->bitmap = FreeImage_Clone(other.mPrivate->bitmap);
-
-    if (!mPrivate->bitmap)
-        throw Exception("Unable to clone image.");
+    mPrivate(new Private(wzy::clone(other.mPrivate->bitmap()))) {
 }
 
 Image::~Image() {
-    FreeImage_Unload(mPrivate->bitmap);
 }
 
 
 // -------------------------------------------------------
 Image& Image::operator=(const Image& rhs) {
-    FIBITMAP* temp = FreeImage_Clone(rhs.mPrivate->bitmap);
-
-    if (!temp)
-        throw Exception("Unable to clone image.");
-
-    FreeImage_Unload(mPrivate->bitmap);
-    mPrivate->bitmap = temp;
-
+    mPrivate->setBitmap(wzy::clone(rhs.mPrivate->bitmap()));
     return *this;
 }
 
 
 // ----------------------------------------------------
+void Image::load(std::istream& is, const Format& format, std::size_t size)
+{ mPrivate->setBitmap(wzy::load(is, format, size)); }
+
+void Image::save(std::ostream& os, const Format& format)
+{ wzy::save(mPrivate->bitmap(), os, format); }
+
 int Image::width() const {
-    return FreeImage_GetWidth(mPrivate->bitmap);
+    return FreeImage_GetWidth(mPrivate->bitmap());
 }
 
 int Image::height() const {
-    return FreeImage_GetHeight(mPrivate->bitmap);
+    return FreeImage_GetHeight(mPrivate->bitmap());
 }
 
 int Image::bpp() const {
-    return FreeImage_GetBPP(mPrivate->bitmap);
+    return FreeImage_GetBPP(mPrivate->bitmap());
 }
 
 const unsigned char* Image::data() const {
-    return FreeImage_GetBits(mPrivate->bitmap);
+    return FreeImage_GetBits(mPrivate->bitmap());
 }
 
 }

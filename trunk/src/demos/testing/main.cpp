@@ -134,11 +134,11 @@ try {
 
     pkg = wzy::Package::load("test");
 
-    //std::cout << pkg->items()[0]->content() << std::endl;
+    std::cout << pkg->items()[0]->content() << std::endl;
 
-    /*wzy::Engine& eng = wzy::Engine::singleton();
+    wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
-    eng.execute();*/
+    eng.execute();
 
 } /*catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;

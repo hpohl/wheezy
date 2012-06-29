@@ -1,6 +1,7 @@
 #ifndef WZY_MEDIA_IMAGE_HPP
 #define WZY_MEDIA_IMAGE_HPP
 
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -17,10 +18,13 @@ public:
         PNG
     };
 
-    Image(const std::string& fileName);
+    Image(std::istream& is, const Format& format, std::size_t size);
     Image(const Image& other);
     ~Image();
     Image& operator=(const Image& rhs);
+
+    void load(std::istream& is, const Format& format, std::size_t size);
+    void save(std::ostream& os, const Format& format);
 
     int width() const;
     int height() const;
@@ -33,9 +37,7 @@ public:
 
 private:
     struct Private;
-    typedef std::unique_ptr<Private> PrivatePtr;
-
-    PrivatePtr mPrivate;
+    std::unique_ptr<Private> mPrivate;
 };
 
 }

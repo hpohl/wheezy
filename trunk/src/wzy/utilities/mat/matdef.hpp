@@ -54,10 +54,10 @@ public:
     { assign(*this, std::forward<Args>(args)...); return *this; }
 
 
-    Vector<rows, T>& operator[](size_t i)
+    Vector<rows, T>& operator[](std::size_t i)
     { assert(i < rows); return mData[i]; }
 
-    const Vector<rows, T>& operator[](size_t i) const
+    const Vector<rows, T>& operator[](std::size_t i) const
     { assert(i < rows); return mData[i]; }
 
     const T* data() const

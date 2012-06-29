@@ -92,13 +92,13 @@ bool AbstractBasicBuffer::bound() const {
 
 
 // --------------------------------------------------
-void AbstractBasicBuffer::setData(size_t size, const void* data) {
+void AbstractBasicBuffer::setData(std::size_t size, const void* data) {
     bind();
     glBufferData(typeToTarget(mType), size, data, usageToGL(mUsage));
     mSize = size;
 }
 
-void AbstractBasicBuffer::updateData(size_t offset, size_t size, const void* data) {
+void AbstractBasicBuffer::updateData(std::size_t offset, std::size_t size, const void* data) {
     bind();
     glBufferSubData(typeToTarget(mType), offset, size, data);
 }
