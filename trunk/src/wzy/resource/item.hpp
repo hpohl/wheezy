@@ -54,11 +54,17 @@ private:
 };
 
 
+template <class T>
+struct IsItem : public std::is_base_of<Item, T> { };
+
+
 class UniversalItem : public Item {
 public:
+    constexpr static int constId = -1;
+
     template <class... Args>
     UniversalItem(const std::string& name, const std::string& content, Args&&... args) :
-        Item(-1, name, std::forward<Args>(args)...),
+        Item(constId, name, std::forward<Args>(args)...),
         mContent(content) {
     }
 
@@ -82,25 +88,30 @@ private:
 };
 
 
-/*class ImageItem : public Item {
-private:
-    static const std::string genContent(const Image& image) {
-
-    }
-
+class ImageItem : public Item {
 public:
+    constexpr static int constId = -2;
+
     template <class... Args>
     ImageItem(const std::string& name, const std::string& content, Args&&... args) :
-        Item(-2, name, std::forward<Args>(args)...),
-        mImage(std::stringstream(content), Image::Format::PNG, content.size()),
-        mContent(genContent(mImage)) {
+        Item(constId, name, std::forward<Args>(args)...),
+        mImage(new RGBAImage(content)) {
+    }
+
+    template <class... Args>
+    ImageItem(const std::string& name, const std::shared_ptr<RGBAImage>& img, Args&&... args) :
+        Item(constId, name, std::forward<Args>(args)...),
+        mImage(img) {
     }
 
     const std::string content() const override
-    { return mContent; }
+    { return mImage->saveToString(); }
 
     std::size_t size() const override
-    { return mContent.size(); }
+    { return content().size(); }
+
+    const std::shared_ptr<RGBAImage> image()
+    { return mImage; }
 
 private:
     static bool mReg;
@@ -109,9 +120,8 @@ private:
                                               const std::string& content)
     { return std::make_shared<UniversalItem>(name, content); }
 
-    Image mImage;
-    std::string mContent;
-};*/
+    std::shared_ptr<RGBAImage> mImage;
+};
 
 }
 

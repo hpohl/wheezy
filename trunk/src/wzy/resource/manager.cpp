@@ -1,21 +1,35 @@
 #include <wzy/resource/manager.hpp>
 
+#include <algorithm>
+
 #include <wzy/utilities/exception.hpp>
 
 
 namespace wzy {
 
-void ResourceManager::addModel(const std::string& name, const std::shared_ptr<Model>& mdl) {
-    auto it = mModels.insert(std::make_pair(name, mdl));
-    if (!it.second)
-        throw Exception("Model named " + name + " already existed in resource database.");
+ResourceManager::ResourceManager() :
+    mPackages() {
 }
 
-const std::shared_ptr<const Model> ResourceManager::getModel(const std::string& name) const {
-    auto it = mModels.find(name);
-    if (it == mModels.end())
-        throw Exception("Model named " + name + " not in resource database.");
-    return it->second;
+
+// ------------------------------------------
+const std::shared_ptr<Package> ResourceManager::getPackage(const std::string& package) {
+    auto pred = [&](const std::shared_ptr<Package>& pkg) -> bool { return pkg->name() == package; };
+    auto it = std::find_if(mPackages.begin(), mPackages.end(), pred);
+
+    if (it == mPackages.end()) {
+        auto pkg = Package::load(package);
+        mPackages.insert(pkg);
+        return pkg;
+    }
+
+    return *it;
+}
+
+const std::shared_ptr<Item> ResourceManager::getItem(const std::string& package,
+                                                     const std::string& name) {
+    auto pkg = getPackage(package);
+    return pkg->getItem(name);
 }
 
 }

@@ -2,11 +2,12 @@
 #define WZY_RESOURCE_PACKAGE_HPP
 
 #include <memory>
+#include <set>
 #include <string>
-#include <vector>
 
 #include <wzy/resource/item.hpp>
 #include <wzy/resource/version.hpp>
+#include <wzy/utilities/exception.hpp>
 
 
 namespace wzy {
@@ -25,17 +26,31 @@ public:
     const Version version() const
     { return mVersion; }
 
-    void addItem(const std::shared_ptr<Item>& item)
-    { mItems.push_back(item); }
+    void addItem(const std::shared_ptr<Item>& item);
     void removeItem(const std::string& name);
 
-    const std::vector<std::shared_ptr<Item> > items()
+    bool hasItem(const std::string& name);
+    const std::shared_ptr<Item> getItem(const std::string& name);
+
+    template <class ItemT>
+    const std::shared_ptr<ItemT> getItem(const std::string& name) {
+        static_assert(IsItem<ItemT>::value, "Trying to get non-item.");
+        auto itm = getItem(name);
+
+        std::cout << itm->id() << " " << ItemT::constId << std::endl;
+
+        if (itm->id() != ItemT::constId)
+            throw Exception("Item " + name + " has incorrect id.");
+        return std::static_pointer_cast<ItemT>(itm);
+    }
+
+    const std::set<std::shared_ptr<Item> > items()
     { return mItems; }
 
 private:
     std::string mName;
     Version mVersion;
-    std::vector<std::shared_ptr<Item> > mItems;
+    std::set<std::shared_ptr<Item> > mItems;
 };
 
 }

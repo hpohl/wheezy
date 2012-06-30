@@ -20,8 +20,8 @@ add_definitions(-std=c++11 -Wall -O0)
 set(CMAKE_CXX_COMPILER g++-4.8)
 
 # Use Eigen 3
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
+#find_package(Eigen3 REQUIRED)
+#include_directories(${EIGEN3_INCLUDE_DIR})
 
 # Use FreeImage
 find_package(FreeImage REQUIRED)

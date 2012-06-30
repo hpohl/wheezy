@@ -214,7 +214,7 @@ void BasicTexture::setTWrap(const Wrap& wrap) {
 
 
 // -----------------------------------------------------
-const std::shared_ptr<Texture2D> textureFromImage(const Image& img) {
+/*const std::shared_ptr<Texture2D> textureFromImage(const Image& img) {
     std::shared_ptr<Texture2D> ret(new Texture2D);
 
     BasicTexture::BaseInternalFormat bif;
@@ -238,7 +238,7 @@ const std::shared_ptr<Texture2D> textureFromImage(const Image& img) {
 
     ret->setImage(bif, img.size(), f, BasicTexture::DataType::UByte, img.data());
     return ret;
-}
+}*/
 
 
 // -----------------------------------------------------

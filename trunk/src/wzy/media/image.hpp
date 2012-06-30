@@ -1,44 +1,95 @@
 #ifndef WZY_MEDIA_IMAGE_HPP
 #define WZY_MEDIA_IMAGE_HPP
 
-#include <iostream>
 #include <memory>
-#include <string>
+#include <type_traits>
+#include <vector>
 
 #include <wzy/utilities/vec.hpp>
 
 
 namespace wzy {
 
+
+template <int n, class T>
+using ImagePixelType = Vector<n, T>;
+
+template <class T>
+using IsImagePixelType = IsVec<T>;
+
+
+template <class PixelType>
 class Image {
 public:
-    enum class Format {
-        BMP,
-        JPG,
-        PNG
-    };
+    static_assert(IsImagePixelType<PixelType>::value, "Invalid pixel type.");
 
-    Image(std::istream& is, const Format& format, std::size_t size);
-    Image(const Image& other);
-    ~Image();
-    Image& operator=(const Image& rhs);
+    typedef std::vector<PixelType> Data;
+    typedef std::shared_ptr<Data> DataPtr;
+    typedef std::shared_ptr<const Data> ConstDataPtr;
 
-    void load(std::istream& is, const Format& format, std::size_t size);
-    void save(std::ostream& os, const Format& format);
 
-    int width() const;
-    int height() const;
-    Vector2i size() const
-    { return {width(), height()}; }
+    Image(const Vector2ui& size, const ConstDataPtr& data) :
+        mSize(size),
+        mData(new Data(*data)) { }
 
-    int bpp() const;
+    explicit Image(const std::string& data) :
+        mSize(),
+        mData(new Data())
+    { loadFromString(data); }
 
-    const unsigned char* data() const;
+    Image(const Image& other) :
+        mSize(other.mSize),
+        mData(new Data(*other.mData)) { }
+
+    ~Image() { }
+
+
+    const Vector2ui size() const
+    { return mSize; }
+
+    const DataPtr data()
+    { return mData; }
+
+    const ConstDataPtr data() const
+    { return mData; }
+
+    const PixelType pixel(const Vector2ui& pos) const
+    { return mData->at(pos.y() * mSize.x() + pos.x()); }
+
+    const std::string saveToString() const;
+    void loadFromString(const std::string& data);
+
 
 private:
-    struct Private;
-    std::unique_ptr<Private> mPrivate;
+    Vector2ui mSize;
+    DataPtr mData;
 };
+
+
+// ----------------------------------------------------
+template <class PixelType>
+const std::string Image<PixelType>::saveToString() const {
+    std::string ret;
+    ret.insert(0, reinterpret_cast<const char*>(mData->data()), mData->size() * sizeof(PixelType));
+    ret.insert(0, reinterpret_cast<const char*>(&mSize), sizeof(mSize));
+    return ret;
+}
+
+template <class PixelType>
+void Image<PixelType>::loadFromString(const std::string& data) {
+    mSize = reinterpret_cast<const Vector2ui&>(*data.data());
+    mData->clear();
+    mData->reserve((data.size() - sizeof(mSize)) / sizeof(PixelType));
+    mData->assign(reinterpret_cast<const PixelType*>(data.data() + sizeof(mSize)),
+                  reinterpret_cast<const PixelType*>(data.data() + data.size()));
+}
+
+
+// -----------------------------------------------------
+typedef Vector4uc RGBAImagePixelType;
+
+typedef Image<RGBAImagePixelType> RGBAImage;
+
 
 }
 

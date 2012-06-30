@@ -30,8 +30,14 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
     std::string pkgname(nameLen, 0);
     inf.read(&pkgname[0], nameLen);
 
-    if (pkgname != name)
-        throw Exception("Package loading name " + name + " doesn't match to package's name " + pkgname + ".");
+    auto pos = name.find_last_of('/');
+    if (pos == std::string::npos)
+        pos = 0;
+
+    std::string str(name.begin() + pos, name.end());
+
+    if (pkgname != str)
+        throw Exception("Package loading name " + str + " doesn't match to package's name " + pkgname + ".");
 
 
     // Read version
@@ -110,13 +116,12 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
 
     for (auto itm : items) {
         ouf.write(reinterpret_cast<char*>(&begin), sizeof(begin));
-        begin += itm->size();
+        begin += sizeof(int) + sizeof(std::size_t) + itm->name().length() + sizeof(std::size_t) + itm->size();
     }
 
 
     // Write packages
     for (auto itm : items) {
-
         // Write item id
         int id = itm->id();
         ouf.write(reinterpret_cast<char*>(&id), sizeof(id));
@@ -147,14 +152,30 @@ Package::~Package() {
 
 
 // ---------------------------------------------
+void Package::addItem(const std::shared_ptr<Item>& item) {
+    if (hasItem(item->name()))
+        throw Exception("An item named " + item->name() + " already exists in package " + mName + ".");
+    auto res = mItems.insert(item);
+    if (!res.second)
+        throw Exception("Failed to add item " + item->name() + " to package " + " mName " + ".");
+}
+
 void Package::removeItem(const std::string& name) {
-    auto it = std::find_if(mItems.begin(), mItems.end(),
-                           [&](const std::shared_ptr<Item>& itm) -> bool { return itm->name() == name; });
+    mItems.erase(getItem(name));
+}
 
+bool Package::hasItem(const std::string& name) {
+    auto pred = [&](const std::shared_ptr<Item>& itm) -> bool { return itm->name() == name; };
+    auto it = std::find_if(mItems.begin(), mItems.end(), pred);
+    return it != mItems.end();
+}
+
+const std::shared_ptr<Item> Package::getItem(const std::string& name) {
+    auto pred = [&](const std::shared_ptr<Item>& itm) -> bool { return itm->name() == name; };
+    auto it = std::find_if(mItems.begin(), mItems.end(), pred);
     if (it == mItems.end())
-        throw Exception("Unable to find item " + name + " in package " + this->name() + ".");
-
-    mItems.erase(it);
+        throw Exception("Unable to find item " + name + " in package " + mName + ".");
+    return *it;
 }
 
 }

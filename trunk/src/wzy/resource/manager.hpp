@@ -1,32 +1,27 @@
 #ifndef WZY_RESOURCE_MANAGER_HPP
 #define WZY_RESOURCE_MANAGER_HPP
 
-#include <map>
-#include <memory>
-#include <string>
+#include <set>
 
+#include <wzy/resource/package.hpp>
 #include <wzy/utilities/singleton.hpp>
 
 
 namespace wzy {
 
-class Model;
-
 class ResourceManager : public Singleton<ResourceManager> {
 public:
+    ResourceManager();
 
-    void addModel(const std::string& name, const std::shared_ptr<Model>& mdl);
+    const std::shared_ptr<Package> getPackage(const std::string& package);
+    const std::shared_ptr<Item> getItem(const std::string& package, const std::string& name);
 
-    bool containsModel(const std::string& name) const
-    { return mModels.find(name) != mModels.end(); }
-
-    const std::shared_ptr<const Model> getModel(const std::string& name) const;
-
-    const std::shared_ptr<Model> getModel(const std::string& name)
-    { return std::const_pointer_cast<Model>(static_cast<const ResourceManager*>(this)->getModel(name)); }
+    template <class ItemT>
+    const std::shared_ptr<ItemT> getItem(const std::string& package, const std::string& name)
+    { return getPackage(package)->getItem<ItemT>(name); }
 
 private:
-    std::map<std::string, std::shared_ptr<Model> > mModels;
+    std::set<std::shared_ptr<Package> > mPackages;
 };
 
 }

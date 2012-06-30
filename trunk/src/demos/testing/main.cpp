@@ -13,7 +13,7 @@
 #include <wzy/render/program.hpp>
 #include <wzy/render/shader.hpp>
 #include <wzy/render/texture.hpp>
-#include <wzy/resource/package.hpp>
+#include <wzy/resource/manager.hpp>
 #include <wzy/utilities/general.hpp>
 #include <wzy/utilities/vec.hpp>
 
@@ -126,21 +126,31 @@ private:
 
 int main()
 try {
-    auto pkg = std::make_shared<wzy::Package>("test", wzy::Version(4, 0, 1));
+    // Create packages
+    auto testing = std::make_shared<wzy::Package>("testing", wzy::Version(1, 0, 0));
 
-    pkg->addItem(std::make_shared<wzy::UniversalItem>("item", "Hi, wazzup?"));
+    wzy::RGBAImage::Data imgData = {
+        { 255, 0, 0, 255 },
+        { 0, 255, 0, 255 },
+        { 0, 0, 255, 255 },
+        { 255, 0, 0, 255 }
+    };
 
-    wzy::Package::write(pkg);
+    auto image = std::make_shared<wzy::RGBAImage>(wzy::Vector2ui(2, 2),
+                                                  std::make_shared<decltype(imgData)>(imgData));
+    testing->addItem(std::make_shared<wzy::ImageItem>("image", image));
+    testing->addItem(std::make_shared<wzy::UniversalItem>("text", "woohooo"));
+    wzy::Package::write(testing);
 
-    pkg = wzy::Package::load("test");
+    auto itm = wzy::ResourceManager::singleton().getItem<wzy::ImageItem>("testing", "image");
+    itm->image();
 
-    std::cout << pkg->items()[0]->content() << std::endl;
 
+    // ------------------------------------------
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
     eng.execute();
 
-} /*catch (const std::exception& ex) {
+} catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;
-}*/
-catch (int i) { }
+}
