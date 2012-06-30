@@ -27,8 +27,4 @@ Item::~Item() {
 bool UniversalItem::mReg = Item::registerCreator(constId, create);
 
 
-// ----------------------------------------------------------
-bool ImageItem::mReg = Item::registerCreator(constId, create);
-
-
 }

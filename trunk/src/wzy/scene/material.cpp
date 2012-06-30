@@ -30,4 +30,8 @@ void Material::use() {
     }
 }
 
+
+// --------------------------------------
+bool MaterialItem::mReg = registerCreator(constId, create);
+
 }

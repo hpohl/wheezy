@@ -152,8 +152,8 @@ BasicTexture::BasicTexture(Type t) :
 
     setMinFilter(MinFilter::Linear);
     setMagFilter(MagFilter::Linear);
-    setSWrap(Wrap::ClampToEdge);
-    setTWrap(Wrap::ClampToEdge);
+    setSWrap(Wrap::Repeat);
+    setTWrap(Wrap::Repeat);
 }
 
 BasicTexture::~BasicTexture() {
@@ -214,31 +214,15 @@ void BasicTexture::setTWrap(const Wrap& wrap) {
 
 
 // -----------------------------------------------------
-/*const std::shared_ptr<Texture2D> textureFromImage(const Image& img) {
+const std::shared_ptr<Texture2D> textureFromImage(const RGBAImage& img) {
     std::shared_ptr<Texture2D> ret(new Texture2D);
-
-    BasicTexture::BaseInternalFormat bif;
-    BasicTexture::Format f;
-
-    switch (img.bpp()) {
-    case 8:
-        bif = BasicTexture::BaseInternalFormat::R;
-        f = BasicTexture::Format::R;
-        break;
-    case 24:
-        bif = BasicTexture::BaseInternalFormat::RGB;
-        f = BasicTexture::Format::BGR;
-        break;
-    case 32:
-        bif = BasicTexture::BaseInternalFormat::RGBA;
-        f = BasicTexture::Format::BGRA;
-        break;
-    default: throw Exception("Unable to convert image to texture: Invalid bpp.");
-    }
-
-    ret->setImage(bif, img.size(), f, BasicTexture::DataType::UByte, img.data());
+    ret->setImage(BasicTexture::BaseInternalFormat::RGBA,
+                  img.size(),
+                  BasicTexture::Format::RGBA,
+                  BasicTexture::DataType::UByte,
+                  img.data()->data());
     return ret;
-}*/
+}
 
 
 // -----------------------------------------------------

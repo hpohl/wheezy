@@ -116,7 +116,7 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
 
     for (auto itm : items) {
         ouf.write(reinterpret_cast<char*>(&begin), sizeof(begin));
-        begin += sizeof(int) + sizeof(std::size_t) + itm->name().length() + sizeof(std::size_t) + itm->size();
+        begin += sizeof(int) + sizeof(std::size_t) + itm->name().length() + sizeof(std::size_t) + itm->content().size();
     }
 
 
@@ -132,7 +132,8 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
         ouf << itm->name();
 
         // Write item size
-        std::size_t size = itm->size();
+        auto content = itm->content();
+        std::size_t size = content.size();
         ouf.write(reinterpret_cast<char*>(&size), sizeof(size));
 
         // Write item content

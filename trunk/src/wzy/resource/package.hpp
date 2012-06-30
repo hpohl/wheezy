@@ -37,8 +37,6 @@ public:
         static_assert(IsItem<ItemT>::value, "Trying to get non-item.");
         auto itm = getItem(name);
 
-        std::cout << itm->id() << " " << ItemT::constId << std::endl;
-
         if (itm->id() != ItemT::constId)
             throw Exception("Item " + name + " has incorrect id.");
         return std::static_pointer_cast<ItemT>(itm);

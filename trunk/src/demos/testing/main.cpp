@@ -138,12 +138,12 @@ try {
 
     auto image = std::make_shared<wzy::RGBAImage>(wzy::Vector2ui(2, 2),
                                                   std::make_shared<decltype(imgData)>(imgData));
-    testing->addItem(std::make_shared<wzy::ImageItem>("image", image));
+    testing->addItem(std::make_shared<wzy::RGBAImageItem>("image", image));
     testing->addItem(std::make_shared<wzy::UniversalItem>("text", "woohooo"));
     wzy::Package::write(testing);
 
-    auto itm = wzy::ResourceManager::singleton().getItem<wzy::ImageItem>("testing", "image");
-    itm->image();
+    auto itm = wzy::ResourceManager::singleton().getItem<wzy::RGBAImageItem>("testing", "image");
+    std::cout << itm->image()->size().x() << std::endl;
 
 
     // ------------------------------------------

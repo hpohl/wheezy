@@ -7,8 +7,6 @@
 #include <memory>
 #include <string>
 
-#include <wzy/media/image.hpp>
-
 
 namespace wzy {
 
@@ -43,7 +41,6 @@ public:
     { return mName; }
 
     virtual const std::string content() const = 0;
-    virtual std::size_t size() const = 0;
 
 private:
     static std::map<int, Creator>& creators()
@@ -71,9 +68,6 @@ public:
     const std::string content() const override
     { return mContent; }
 
-    std::size_t size() const override
-    { return mContent.size(); }
-
     void setContent(const std::string& content)
     { mContent = content; }
 
@@ -85,42 +79,6 @@ private:
     { return std::make_shared<UniversalItem>(name, content); }
 
     std::string mContent;
-};
-
-
-class ImageItem : public Item {
-public:
-    constexpr static int constId = -2;
-
-    template <class... Args>
-    ImageItem(const std::string& name, const std::string& content, Args&&... args) :
-        Item(constId, name, std::forward<Args>(args)...),
-        mImage(new RGBAImage(content)) {
-    }
-
-    template <class... Args>
-    ImageItem(const std::string& name, const std::shared_ptr<RGBAImage>& img, Args&&... args) :
-        Item(constId, name, std::forward<Args>(args)...),
-        mImage(img) {
-    }
-
-    const std::string content() const override
-    { return mImage->saveToString(); }
-
-    std::size_t size() const override
-    { return content().size(); }
-
-    const std::shared_ptr<RGBAImage> image()
-    { return mImage; }
-
-private:
-    static bool mReg;
-
-    static const std::shared_ptr<Item> create(const std::string& name,
-                                              const std::string& content)
-    { return std::make_shared<UniversalItem>(name, content); }
-
-    std::shared_ptr<RGBAImage> mImage;
 };
 
 }

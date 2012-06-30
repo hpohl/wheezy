@@ -144,7 +144,7 @@ typedef Texture<BasicTexture::Type::Tex2D> Texture2D;
 
 
 // ---------------------------------------------------
-//const std::shared_ptr<Texture2D> textureFromImage(const Image& img);
+const std::shared_ptr<Texture2D> textureFromImage(const RGBAImage& img);
 
 }
 }
