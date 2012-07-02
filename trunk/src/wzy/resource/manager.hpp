@@ -14,7 +14,7 @@ public:
     ResourceManager();
 
     const std::shared_ptr<Package> getPackage(const std::string& package);
-    const std::shared_ptr<Item> getItem(const std::string& package, const std::string& name);
+    const std::shared_ptr<BasicItem> getItem(const std::string& package, const std::string& name);
 
     template <class ItemT>
     const std::shared_ptr<ItemT> getItem(const std::string& package, const std::string& name)

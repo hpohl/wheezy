@@ -96,7 +96,7 @@ void Program::detach(const std::shared_ptr<BasicShader>& shader) {
 
 bool Program::attachedGL(const std::shared_ptr<BasicShader>& shader) const {
     GLint num = 0;
-    glGetProgramiv(GL_ATTACHED_SHADERS, shader->name(), &num);
+    glGetProgramiv(mName, GL_ATTACHED_SHADERS, &num);
     std::unique_ptr<GLuint[]> names(new GLuint[num]);
     glGetAttachedShaders(mName, num, nullptr, names.get());
 

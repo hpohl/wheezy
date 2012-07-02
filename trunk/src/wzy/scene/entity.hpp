@@ -4,12 +4,12 @@
 #include <memory>
 #include <type_traits>
 
+#include <wzy/render/material.hpp>
 #include <wzy/scene/node.hpp>
 
 
 namespace wzy {
 
-class Material;
 class Model;
 
 namespace detail {
@@ -31,11 +31,17 @@ public:
     void setModel(const std::shared_ptr<Model>& mdl)
     { mModel = validate(mdl); }
 
+    const std::shared_ptr<render::Material> material()
+    { return mMaterial; }
+
+    void setMaterial(const std::shared_ptr<render::Material>& mat)
+    { mMaterial = mat; }
+
     void draw(const Matrix4f& projection, const Matrix4f& transform) override;
 
 private:
     std::shared_ptr<Model> mModel;
-    std::shared_ptr<Material> mMaterial;
+    std::shared_ptr<render::Material> mMaterial;
 };
 
 class Entity final : public AbstractEntity {

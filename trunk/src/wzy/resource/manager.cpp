@@ -26,7 +26,7 @@ const std::shared_ptr<Package> ResourceManager::getPackage(const std::string& pa
     return *it;
 }
 
-const std::shared_ptr<Item> ResourceManager::getItem(const std::string& package,
+const std::shared_ptr<BasicItem> ResourceManager::getItem(const std::string& package,
                                                      const std::string& name) {
     auto pkg = getPackage(package);
     return pkg->getItem(name);

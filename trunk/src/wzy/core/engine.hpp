@@ -8,12 +8,17 @@
 
 #include <wzy/core/state.hpp>
 #include <wzy/core/window.hpp>
-#include <wzy/gui/view.hpp>
-#include <wzy/scene/node.hpp>
 #include <wzy/utilities/singleton.hpp>
 
 
 namespace wzy {
+
+class SceneNode;
+
+namespace gui {
+class Object;
+class View;
+}
 
 class Engine final : public Singleton<Engine>,
                      public Window {

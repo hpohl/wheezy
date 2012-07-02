@@ -9,7 +9,7 @@ Image::Image(const UDim& position,
              const std::shared_ptr<render::Texture2D>& texture) :
     Object(position, size),
     mRenderData(render::Data::quad()),
-    mMaterial(new Material) {
+    mMaterial(new render::Material) {
 
     material()->textures()->push_back(texture);
 }

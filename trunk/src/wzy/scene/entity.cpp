@@ -1,6 +1,6 @@
 #include <wzy/scene/entity.hpp>
 
-#include <wzy/scene/material.hpp>
+#include <wzy/render/material.hpp>
 #include <wzy/scene/model.hpp>
 
 

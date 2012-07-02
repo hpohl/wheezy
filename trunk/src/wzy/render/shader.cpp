@@ -55,20 +55,23 @@ const BasicShader::BuiltIn BasicShader::findBuiltIn(const std::string& name) {
 }
 
 void BasicShader::parseSource(std::string& src) {
-    for (BuiltIns::value_type& p : mBuiltIns) {
-        auto name = p.first;
-        auto builtin = p.second;
+    if (src.find("//WZYSHADER") == std::string::npos) {
+        for (BuiltIns::value_type& p : mBuiltIns) {
+            auto name = p.first;
+            auto builtin = p.second;
 
-        if (src.find(name) != std::string::npos) {
-            auto addition = builtin.layout + " " + builtin.storage +
-                    " " + builtin.type + " " + name + ";\n";
-            src.insert(src.begin(), addition.begin(), addition.end());
+            if (src.find(name) != std::string::npos) {
+                auto addition = builtin.layout + " " + builtin.storage +
+                        " " + builtin.type + " " + name + ";\n";
+                src.insert(src.begin(), addition.begin(), addition.end());
+            }
         }
-    }
 
-    src.insert(0, "layout(row_major) uniform;\n");
-    src.insert(0, "#extension GL_ARB_shading_language_420pack: enable\n");
-    src.insert(0, "#version 420\n");
+        src.insert(0, "layout(row_major) uniform;\n");
+        src.insert(0, "#extension GL_ARB_shading_language_420pack: enable\n");
+        src.insert(0, "#version 420\n");
+        src.insert(0, "//WZYSHADER\n");
+    }
 }
 
 

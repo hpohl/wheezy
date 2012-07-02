@@ -42,6 +42,7 @@ typedef Vector2<unsigned int> Vector2ui;
 typedef Vector3<float> Vector3f;
 typedef Vector3<double> Vector3d;
 typedef Vector3<int> Vector3i;
+typedef Vector3<unsigned char> Vector3uc;
 
 typedef Vector4<float> Vector4f;
 typedef Vector4<double> Vector4d;

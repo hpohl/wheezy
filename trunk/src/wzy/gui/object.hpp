@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include <memory>
-#include <vector>
+#include <set>
 
 #include <wzy/gui/udim.hpp>
 #include <wzy/render/framebuffer.hpp>
@@ -18,11 +18,8 @@ public:
            const UDim& size);
     virtual ~Object() { }
 
-    void attach(const std::shared_ptr<Object>& obj)
-    { mObjects.push_back(obj); }
-
-    void detach(const std::shared_ptr<Object>& obj)
-    { std::remove(mObjects.begin(), mObjects.end(), obj); }
+    void attach(const std::shared_ptr<Object>& obj);
+    void detach(const std::shared_ptr<Object>& obj);
 
     virtual void draw(const UDim& position,
                       const Vector2f& scale);
@@ -49,7 +46,7 @@ private:
     UDim mPosition;
     UDim mSize;
     Vector2f mScale;
-    std::vector<std::shared_ptr<Object> > mObjects;
+    std::set<std::shared_ptr<Object> > mObjects;
 };
 
 }

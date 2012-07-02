@@ -3,7 +3,7 @@
 
 #include <wzy/gui/object.hpp>
 #include <wzy/render/data.hpp>
-#include <wzy/scene/material.hpp>
+#include <wzy/render/material.hpp>
 #include <wzy/utilities/general.hpp>
 
 
@@ -28,16 +28,16 @@ public:
     void setTexture(const std::shared_ptr<render::Texture2D>& texture)
     { material()->textures()->at(0) = validate(texture); }
 
-    const std::shared_ptr<Material> material()
+    const std::shared_ptr<render::Material> material()
     { return mMaterial; }
 
-    void setMaterial(const std::shared_ptr<Material>& ptr)
+    void setMaterial(const std::shared_ptr<render::Material>& ptr)
     { mMaterial = validate(ptr); }
 
 
 private:
     std::shared_ptr<render::Data> mRenderData;
-    std::shared_ptr<Material> mMaterial;
+    std::shared_ptr<render::Material> mMaterial;
 };
 
 }

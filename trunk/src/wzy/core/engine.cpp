@@ -1,7 +1,9 @@
 #include <wzy/core/engine.hpp>
 
+#include <wzy/gui/view.hpp>
 #include <wzy/render/render.hpp>
 #include <wzy/scene/model.hpp>
+#include <wzy/scene/node.hpp>
 
 
 namespace wzy {

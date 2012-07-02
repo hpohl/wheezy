@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <wzy/render/data.hpp>
-#include <wzy/scene/material.hpp>
+#include <wzy/render/material.hpp>
 #include <wzy/utilities/vec.hpp>
 
 
@@ -44,10 +44,10 @@ public:
     const std::shared_ptr<const render::Data> renderData() const
     { return mRenderData; }
 
-    const std::shared_ptr<Material> material()
+    const std::shared_ptr<render::Material> material()
     { return mMaterial; }
 
-    void setMaterial(const std::shared_ptr<Material>& mtl)
+    void setMaterial(const std::shared_ptr<render::Material>& mtl)
     { mMaterial = validate(mtl); }
 
     const VerticesPtr vertices()
@@ -70,7 +70,7 @@ private:
     VerticesPtr mVertices;
     ColoursPtr mColours;
     TexCoordsPtr mTexCoords;
-    std::shared_ptr<Material> mMaterial;
+    std::shared_ptr<render::Material> mMaterial;
     std::shared_ptr<render::Data> mRenderData;
 };
 

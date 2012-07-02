@@ -26,11 +26,11 @@ public:
     const Version version() const
     { return mVersion; }
 
-    void addItem(const std::shared_ptr<Item>& item);
+    void addItem(const std::shared_ptr<BasicItem>& item);
     void removeItem(const std::string& name);
 
     bool hasItem(const std::string& name);
-    const std::shared_ptr<Item> getItem(const std::string& name);
+    const std::shared_ptr<BasicItem> getItem(const std::string& name);
 
     template <class ItemT>
     const std::shared_ptr<ItemT> getItem(const std::string& name) {
@@ -42,13 +42,13 @@ public:
         return std::static_pointer_cast<ItemT>(itm);
     }
 
-    const std::set<std::shared_ptr<Item> > items()
+    const std::set<std::shared_ptr<BasicItem> > items()
     { return mItems; }
 
 private:
     std::string mName;
     Version mVersion;
-    std::set<std::shared_ptr<Item> > mItems;
+    std::set<std::shared_ptr<BasicItem> > mItems;
 };
 
 }

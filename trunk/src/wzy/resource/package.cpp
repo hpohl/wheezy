@@ -81,7 +81,7 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
         inf.read(&data[0], size);
 
         // Add item to package
-        pkg->addItem(Item::create(id, itmName, data));
+        pkg->addItem(BasicItem::create(id, itmName, data));
     }
 
     return pkg;
@@ -153,7 +153,7 @@ Package::~Package() {
 
 
 // ---------------------------------------------
-void Package::addItem(const std::shared_ptr<Item>& item) {
+void Package::addItem(const std::shared_ptr<BasicItem>& item) {
     if (hasItem(item->name()))
         throw Exception("An item named " + item->name() + " already exists in package " + mName + ".");
     auto res = mItems.insert(item);
@@ -166,13 +166,13 @@ void Package::removeItem(const std::string& name) {
 }
 
 bool Package::hasItem(const std::string& name) {
-    auto pred = [&](const std::shared_ptr<Item>& itm) -> bool { return itm->name() == name; };
+    auto pred = [&](const std::shared_ptr<BasicItem>& itm) -> bool { return itm->name() == name; };
     auto it = std::find_if(mItems.begin(), mItems.end(), pred);
     return it != mItems.end();
 }
 
-const std::shared_ptr<Item> Package::getItem(const std::string& name) {
-    auto pred = [&](const std::shared_ptr<Item>& itm) -> bool { return itm->name() == name; };
+const std::shared_ptr<BasicItem> Package::getItem(const std::string& name) {
+    auto pred = [&](const std::shared_ptr<BasicItem>& itm) -> bool { return itm->name() == name; };
     auto it = std::find_if(mItems.begin(), mItems.end(), pred);
     if (it == mItems.end())
         throw Exception("Unable to find item " + name + " in package " + mName + ".");

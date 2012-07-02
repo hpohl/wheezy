@@ -1,12 +1,13 @@
-#include <wzy/scene/material.hpp>
+#include <wzy/render/material.hpp>
 
 #include <wzy/render/program.hpp>
 
 
 namespace wzy {
+namespace render {
 
 Material::Material() :
-    mProgram(new render::Program),
+    mProgram(new Program),
     mTextures(new std::vector<std::shared_ptr<render::Texture2D> >) {
 }
 
@@ -30,8 +31,5 @@ void Material::use() {
     }
 }
 
-
-// --------------------------------------
-bool MaterialItem::mReg = registerCreator(constId, create);
-
+}
 }

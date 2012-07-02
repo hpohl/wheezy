@@ -6,6 +6,7 @@
 #include <GL/freeglut.h>
 
 #include <wzy/core/engine.hpp>
+#include <wzy/gui/view.hpp>
 #include <wzy/media/image.hpp>
 #include <wzy/scene/entity.hpp>
 #include <wzy/scene/model.hpp>
@@ -14,6 +15,9 @@
 #include <wzy/render/shader.hpp>
 #include <wzy/render/texture.hpp>
 #include <wzy/resource/manager.hpp>
+#include <wzy/resource/items/image.hpp>
+#include <wzy/resource/items/material.hpp>
+#include <wzy/resource/items/universal.hpp>
 #include <wzy/utilities/general.hpp>
 #include <wzy/utilities/vec.hpp>
 
@@ -49,16 +53,6 @@ std::vector<wzy::Vector4f> colours = {
 };
 
 const std::shared_ptr<wzy::Model> createModel() {
-    /*auto verts = std::make_shared<std::vector<wzy::Vector4f> >(vertices);
-    auto cols = std::make_shared<std::vector<wzy::Vector4f> >(colours);
-    auto texCs = std::make_shared<std::vector<wzy::Vector2f> >(texCoords);
-
-    auto mdl = std::make_shared<wzy::Model>(verts, cols, texCs);
-    auto prog = std::make_shared<wzy::render::Program>();
-    prog->setColourDefault();
-    mdl->material()->setProgram(prog);
-    //mdl->material()->textures()->push_back(wzy::render::textureFromImage(wzy::Image("images/landscape.jpg")));*/
-
     auto mdl = wzy::loadFromOBJ("models/world.obj");
 
     std::vector<wzy::Vector4f> colours(mdl->vertices()->size(), wzy::Vector4f(1.0, 0.0, 0.0, 1.0));
@@ -82,10 +76,19 @@ public:
         mEnt(std::make_shared<wzy::Entity>(mModel)) {
         wzy::Engine::singleton().rootNode()->attach(mEnt);
 
-        mEnt->setPosition(wzy::Vector3f(-5.0, -1.0, 0.0));
+        mEnt->setPosition(wzy::Vector3f(0.0, 0.0, -1.0));
 
-        auto cam = wzy::Engine::singleton().rootView()->camera();
-        cam->setOrientation(wzy::Quaternionf(wzy::Degree(0.0), wzy::Degree(90.0), wzy::Degree(0.0)));
+        auto pkg = std::make_shared<wzy::Package>("testpkg", wzy::Version(1, 0, 0));
+        auto itm = std::make_shared<wzy::MaterialItem>("mat", mEnt->material());
+        pkg->addItem(itm);
+
+        wzy::Package::write(pkg);
+
+        auto litm = wzy::ResourceManager::singleton().getItem<wzy::MaterialItem>("testpkg", "mat");
+
+        auto oldmat = mEnt->material();
+        auto newmat = litm->material();
+        mEnt->setMaterial(litm->material());
     }
 
     void update() {
@@ -126,27 +129,6 @@ private:
 
 int main()
 try {
-    // Create packages
-    auto testing = std::make_shared<wzy::Package>("testing", wzy::Version(1, 0, 0));
-
-    wzy::RGBAImage::Data imgData = {
-        { 255, 0, 0, 255 },
-        { 0, 255, 0, 255 },
-        { 0, 0, 255, 255 },
-        { 255, 0, 0, 255 }
-    };
-
-    auto image = std::make_shared<wzy::RGBAImage>(wzy::Vector2ui(2, 2),
-                                                  std::make_shared<decltype(imgData)>(imgData));
-    testing->addItem(std::make_shared<wzy::RGBAImageItem>("image", image));
-    testing->addItem(std::make_shared<wzy::UniversalItem>("text", "woohooo"));
-    wzy::Package::write(testing);
-
-    auto itm = wzy::ResourceManager::singleton().getItem<wzy::RGBAImageItem>("testing", "image");
-    std::cout << itm->image()->size().x() << std::endl;
-
-
-    // ------------------------------------------
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
     eng.execute();

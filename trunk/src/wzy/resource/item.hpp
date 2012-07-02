@@ -2,7 +2,6 @@
 #define WZY_RESOURCE_ITEM_HPP
 
 #include <functional>
-#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
@@ -10,28 +9,28 @@
 
 namespace wzy {
 
-class Item {
+class BasicItem {
 public:
-    typedef std::function<const std::shared_ptr<Item>(const std::string&,
+    typedef std::function<const std::shared_ptr<BasicItem>(const std::string&,
                                                            const std::string&)> Creator;
 
-    static const std::shared_ptr<Item> create(int id,
-                                              const std::string& name,
-                                              const std::string& content);
+    static const std::shared_ptr<BasicItem> create(int id,
+                                                   const std::string& name,
+                                                   const std::string& content);
 
-    static bool registerCreator(int id, const Creator& creator)
-    { creators().insert(std::make_pair(id, creator)); return true; }
+    static void registerCreator(int id, const Creator& creator)
+    { creators().insert(std::make_pair(id, creator)); }
 
     static void removeCreator(int id)
     { creators().erase(id); }
 
 
-    Item(int id, const std::string& name) :
+    BasicItem(int id, const std::string& name) :
         mId(id),
         mName(name) {
     }
 
-    virtual ~Item() = 0;
+    virtual ~BasicItem() = 0;
 
 
     int id() const
@@ -50,36 +49,47 @@ private:
     std::string mName;
 };
 
-
 template <class T>
-struct IsItem : public std::is_base_of<Item, T> { };
+struct IsItem : public std::is_base_of<BasicItem, T> { };
 
+namespace detail {
+template <class T, T> struct Val { };
+}
 
-class UniversalItem : public Item {
+template <class Derived, int tid>
+class Item : public BasicItem {
 public:
-    constexpr static int constId = -1;
+    constexpr static int constId = tid;
 
     template <class... Args>
-    UniversalItem(const std::string& name, const std::string& content, Args&&... args) :
-        Item(constId, name, std::forward<Args>(args)...),
-        mContent(content) {
-    }
+    Item(Args&&... args) :
+        BasicItem(tid, std::forward<Args>(args)...) { }
 
-    const std::string content() const override
-    { return mContent; }
-
-    void setContent(const std::string& content)
-    { mContent = content; }
+    virtual ~Item() = 0;
 
 private:
-    static bool mReg;
+    static const std::shared_ptr<BasicItem> create(const std::string& name,
+                                                   const std::string& content)
+    { return std::make_shared<Derived>(name, content); }
 
-    static const std::shared_ptr<Item> create(const std::string& name,
-                                              const std::string& content)
-    { return std::make_shared<UniversalItem>(name, content); }
+    struct Initialiser {
+        Initialiser()
+        { registerCreator(tid, Item<Derived, tid>::create); }
 
-    std::string mContent;
+        ~Initialiser()
+        { removeCreator(tid); }
+    };
+
+    static Initialiser mInitialiser;
+
+    typedef detail::Val<Initialiser&, mInitialiser> User;
 };
+
+template <class Derived, int tid>
+typename Item<Derived, tid>::Initialiser Item<Derived, tid>::mInitialiser;
+
+template <class Derived, int tid>
+Item<Derived, tid>::~Item() { }
 
 }
 

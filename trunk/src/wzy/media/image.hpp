@@ -87,43 +87,11 @@ void Image<PixelType>::loadFromString(const std::string& data) {
 
 
 // -----------------------------------------------------
-typedef Vector4uc RGBAImagePixelType;
+typedef Vector4uc RGBAImagePixel;
+typedef Vector3uc RGBImagePixel;
 
-typedef Image<RGBAImagePixelType> RGBAImage;
-
-
-// -------------------------------------------------
-class RGBAImageItem : public Item {
-public:
-    constexpr static int constId = -2;
-
-    template <class... Args>
-    RGBAImageItem(const std::string& name, const std::string& content, Args&&... args) :
-        Item(constId, name, std::forward<Args>(args)...),
-        mImage(new RGBAImage(content)) {
-    }
-
-    template <class... Args>
-    RGBAImageItem(const std::string& name, const std::shared_ptr<RGBAImage>& img, Args&&... args) :
-        Item(constId, name, std::forward<Args>(args)...),
-        mImage(img) {
-    }
-
-    const std::string content() const override
-    { return mImage->saveToString(); }
-
-    const std::shared_ptr<RGBAImage> image()
-    { return mImage; }
-
-private:
-    static bool mReg;
-
-    static const std::shared_ptr<Item> create(const std::string& name,
-                                              const std::string& content)
-    { return std::make_shared<RGBAImageItem>(name, content); }
-
-    std::shared_ptr<RGBAImage> mImage;
-};
+typedef Image<RGBAImagePixel> RGBAImage;
+typedef Image<RGBAImagePixel> RGBImage;
 
 }
 

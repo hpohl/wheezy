@@ -4,6 +4,6 @@
 namespace wzy {
 
 // -------------------------------------------------------------------
-bool RGBAImageItem::mReg = registerCreator(constId, create);
+//bool RGBAImageItem::mReg = registerCreator(constId, create);
 
 }

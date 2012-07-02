@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <GL/glew.h>
+
 #include <wzy/render/shader.hpp>
 #include <wzy/utilities/exception.hpp>
 #include <wzy/utilities/general.hpp>
