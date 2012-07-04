@@ -14,10 +14,10 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 project(wheezy)
 
 # Use C++ 11
-add_definitions(-std=c++11 -Wall -O0)
+add_definitions(-std=c++11 -Wall)
 
 # Use GCC 4.8
-set(CMAKE_CXX_COMPILER g++-4.8)
+#set(CMAKE_CXX_COMPILER g++-4.8)
 
 # Use Eigen 3
 #find_package(Eigen3 REQUIRED)

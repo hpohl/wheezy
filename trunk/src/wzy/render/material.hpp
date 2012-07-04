@@ -6,7 +6,6 @@
 #include <vector>
 
 #include <wzy/render/texture.hpp>
-#include <wzy/resource/item.hpp>
 #include <wzy/utilities/general.hpp>
 
 
@@ -25,6 +24,9 @@ public:
     void use();
 
     const std::shared_ptr<Program> program()
+    { return mProgram; }
+
+    const std::shared_ptr<const Program> program() const
     { return mProgram; }
 
     void setProgram(const std::shared_ptr<Program>& prog)

@@ -1,6 +1,7 @@
 #include <wzy/gui/object.hpp>
 
 #include <wzy/utilities/exception.hpp>
+#include <wzy/utilities/general.hpp>
 
 
 namespace wzy {
@@ -22,7 +23,7 @@ void Object::draw(const UDim& position, const Vector2f& scale) {
 }
 
 void Object::attach(const std::shared_ptr<Object>& obj) {
-    if (!mObjects.insert(obj).second)
+    if (!mObjects.insert(validate(obj)).second)
         throw Exception("Unable to attach GUI object.");
 }
 

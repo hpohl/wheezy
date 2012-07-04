@@ -2,12 +2,16 @@
 #define WZY_GUI_VIEW_HPP
 
 #include <wzy/gui/image.hpp>
-#include <wzy/render/framebuffer.hpp>
-#include <wzy/scene/camera.hpp>
-#include <wzy/scene/node.hpp>
 
 
 namespace wzy {
+
+class Camera;
+class AbstractSceneNode;
+
+namespace render {
+class FrameBuffer;
+}
 
 namespace gui {
 
@@ -18,8 +22,7 @@ public:
          const UDim& size,
          const Vector2i& frameBufferSize = Vector2i(0, 0));
 
-    void draw(const UDim& position,
-              const Vector2f& scale) override;
+    void draw(const UDim& position, const Vector2f& scale) override;
 
     const std::shared_ptr<Camera> camera()
     { return mCamera; }

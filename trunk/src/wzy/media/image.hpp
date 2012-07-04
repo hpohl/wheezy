@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <vector>
 
-#include <wzy/resource/item.hpp>
+#include <wzy/utilities/general.hpp>
 #include <wzy/utilities/vec.hpp>
 
 
@@ -31,7 +31,7 @@ public:
 
     Image(const Vector2ui& size, const ConstDataPtr& data) :
         mSize(size),
-        mData(new Data(*data)) { }
+        mData(new Data(*validate(data))) { }
 
     explicit Image(const std::string& data) :
         mSize(),
@@ -72,13 +72,14 @@ template <class PixelType>
 const std::string Image<PixelType>::saveToString() const {
     std::string ret;
     ret.insert(0, reinterpret_cast<const char*>(mData->data()), mData->size() * sizeof(PixelType));
-    ret.insert(0, reinterpret_cast<const char*>(&mSize), sizeof(mSize));
+    Vector2<std::int32_t> size = mSize;
+    ret.insert(0, reinterpret_cast<const char*>(&size), sizeof(size));
     return ret;
 }
 
 template <class PixelType>
 void Image<PixelType>::loadFromString(const std::string& data) {
-    mSize = reinterpret_cast<const Vector2ui&>(*data.data());
+    mSize = reinterpret_cast<const Vector2<std::int32_t>&>(*data.data());
     mData->clear();
     mData->reserve((data.size() - sizeof(mSize)) / sizeof(PixelType));
     mData->assign(reinterpret_cast<const PixelType*>(data.data() + sizeof(mSize)),

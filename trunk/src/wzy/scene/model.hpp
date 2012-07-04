@@ -36,7 +36,7 @@ public:
     { mChildren->push_back(validate(mdl)); }
 
     void detach(const std::shared_ptr<Model>& mdl)
-    { std::remove(mChildren->begin(), mChildren->end(), mdl); }
+    { std::remove(mChildren->begin(), mChildren->end(), validate(mdl)); }
 
     const ModelsPtr children()
     { return mChildren; }

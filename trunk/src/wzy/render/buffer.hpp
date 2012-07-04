@@ -4,11 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include <cstddef>
-
-#include <wzy/render/program.hpp>
 #include <wzy/utilities/noncopyable.hpp>
-#include <wzy/utilities/vec.hpp>
 
 
 namespace wzy {

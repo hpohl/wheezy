@@ -1,7 +1,6 @@
 #include <wzy/render/data.hpp>
 
 #include <wzy/render/glew.hpp>
-#include <wzy/render/shader.hpp>
 #include <wzy/utilities/exception.hpp>
 
 
@@ -62,9 +61,9 @@ Data::Data(const std::shared_ptr<const VertexBuffer>& vertices,
            const std::shared_ptr<const ColourBuffer>& colours,
            const std::shared_ptr<const TexCoordBuffer>& texCoords) :
     mName(0),
-    mVertexBuffer(vertices),
-    mColourBuffer(colours),
-    mTexCoordBuffer(texCoords) {
+    mVertexBuffer(validate(vertices)),
+    mColourBuffer(validate(colours)),
+    mTexCoordBuffer(validate(texCoords)) {
 
     glGenVertexArrays(1, &mName);
     if (!mName)

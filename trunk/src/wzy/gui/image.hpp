@@ -2,12 +2,17 @@
 #define WZY_GUI_IMAGE_HPP
 
 #include <wzy/gui/object.hpp>
-#include <wzy/render/data.hpp>
 #include <wzy/render/material.hpp>
 #include <wzy/utilities/general.hpp>
 
 
 namespace wzy {
+
+namespace render {
+class Data;
+class Material;
+}
+
 namespace gui {
 
 class Image : public Object {

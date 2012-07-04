@@ -8,6 +8,7 @@
 #include <wzy/core/engine.hpp>
 #include <wzy/gui/view.hpp>
 #include <wzy/media/image.hpp>
+#include <wzy/scene/camera.hpp>
 #include <wzy/scene/entity.hpp>
 #include <wzy/scene/model.hpp>
 #include <wzy/render/data.hpp>
@@ -77,18 +78,6 @@ public:
         wzy::Engine::singleton().rootNode()->attach(mEnt);
 
         mEnt->setPosition(wzy::Vector3f(0.0, 0.0, -1.0));
-
-        auto pkg = std::make_shared<wzy::Package>("testpkg", wzy::Version(1, 0, 0));
-        auto itm = std::make_shared<wzy::MaterialItem>("mat", mEnt->material());
-        pkg->addItem(itm);
-
-        wzy::Package::write(pkg);
-
-        auto litm = wzy::ResourceManager::singleton().getItem<wzy::MaterialItem>("testpkg", "mat");
-
-        auto oldmat = mEnt->material();
-        auto newmat = litm->material();
-        mEnt->setMaterial(litm->material());
     }
 
     void update() {
@@ -129,6 +118,8 @@ private:
 
 int main()
 try {
+    auto pkg = std::make_shared<wzy::Package>("testpkg", wzy::Version(1, 0, 0));
+
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();
     eng.execute();

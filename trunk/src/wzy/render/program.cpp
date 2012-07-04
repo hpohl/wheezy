@@ -87,14 +87,18 @@ void Program::setColourDefault() {
 }
 
 void Program::attach(const std::shared_ptr<BasicShader>& shader) {
+    wzy::validate(shader);
     glAttachShader(mName, shader->name());
 }
 
 void Program::detach(const std::shared_ptr<BasicShader>& shader) {
+    wzy::validate(shader);
     glDetachShader(mName, shader->name());
 }
 
 bool Program::attachedGL(const std::shared_ptr<BasicShader>& shader) const {
+    wzy::validate(shader);
+
     GLint num = 0;
     glGetProgramiv(mName, GL_ATTACHED_SHADERS, &num);
     std::unique_ptr<GLuint[]> names(new GLuint[num]);

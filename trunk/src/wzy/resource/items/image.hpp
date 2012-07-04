@@ -24,6 +24,9 @@ public: \
     const std::string content() const override \
     { return mImage->saveToString(); } \
     \
+    const std::shared_ptr<Image<p> > image() \
+    { return mImage; } \
+    \
 private: \
     std::shared_ptr<Image<p> > mImage; \
 };

@@ -24,7 +24,7 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
         throw Exception("Package " + name + " is not a valid package.");
 
     // Read name length & name
-    std::size_t nameLen = 0;
+    std::int32_t nameLen = 0;
     inf.read(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
 
     std::string pkgname(nameLen, 0);
@@ -45,12 +45,12 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
     inf.read(reinterpret_cast<char*>(&vers), sizeof(Version));
 
     // Read the number of items
-    std::size_t numItems = 0;
+    std::int32_t numItems = 0;
     inf.read(reinterpret_cast<char*>(&numItems), sizeof(numItems));
 
     // Read item locations
-    std::vector<std::size_t> begins(numItems);
-    inf.read(reinterpret_cast<char*>(&begins[0]), numItems * sizeof(std::size_t));
+    std::vector<std::int32_t> begins(numItems);
+    inf.read(reinterpret_cast<char*>(&begins[0]), numItems * sizeof(std::int32_t));
 
     // Create package
     auto pkg = std::make_shared<Package>(name, vers);
@@ -66,14 +66,14 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
         inf.read(reinterpret_cast<char*>(&id), sizeof(id));
 
         // Read item name length & name
-        std::size_t itmNameLen = 0;
+        std::int32_t itmNameLen = 0;
         inf.read(reinterpret_cast<char*>(&itmNameLen), sizeof(itmNameLen));
 
         std::string itmName(itmNameLen, 0);
         inf.read(&itmName[0], itmNameLen);
 
         // Read item size
-        std::size_t size = 0;
+        std::int32_t size = 0;
         inf.read(reinterpret_cast<char*>(&size), sizeof(size));
 
         // Read item content
@@ -98,7 +98,7 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
     ouf << "WZYPKG";
 
     // Write package name length and name
-    std::size_t len = pkg->name().length();
+    std::int32_t len = pkg->name().length();
     ouf.write(reinterpret_cast<char*>(&len), sizeof(len));
     ouf << pkg->name();
 
@@ -107,16 +107,16 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
     ouf.write(reinterpret_cast<char*>(&vers), sizeof(Version));
 
     // Write item count
-    std::size_t count = pkg->mItems.size();
+    std::int32_t count = pkg->mItems.size();
     ouf.write(reinterpret_cast<char*>(&count), sizeof(count));
 
     // Write item locations
     auto items = pkg->mItems;
-    std::size_t begin = ouf.tellp() + static_cast<decltype(ouf.tellp())>(items.size() * sizeof(begin));
+    std::int32_t begin = ouf.tellp() + static_cast<decltype(ouf.tellp())>(items.size() * sizeof(begin));
 
     for (auto itm : items) {
         ouf.write(reinterpret_cast<char*>(&begin), sizeof(begin));
-        begin += sizeof(int) + sizeof(std::size_t) + itm->name().length() + sizeof(std::size_t) + itm->content().size();
+        begin += sizeof(int) + sizeof(std::int32_t) + itm->name().length() + sizeof(std::int32_t) + itm->content().size();
     }
 
 
@@ -127,13 +127,13 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
         ouf.write(reinterpret_cast<char*>(&id), sizeof(id));
 
         // Write item name length & name
-        std::size_t nameLen = itm->name().length();
+        std::int32_t nameLen = itm->name().length();
         ouf.write(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
         ouf << itm->name();
 
         // Write item size
         auto content = itm->content();
-        std::size_t size = content.size();
+        std::int32_t size = content.size();
         ouf.write(reinterpret_cast<char*>(&size), sizeof(size));
 
         // Write item content

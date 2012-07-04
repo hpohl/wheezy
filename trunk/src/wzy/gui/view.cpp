@@ -1,8 +1,7 @@
 #include <wzy/gui/view.hpp>
 
-#include <wzy/core/engine.hpp>
 #include <wzy/render/render.hpp>
-#include <wzy/render/shader.hpp>
+#include <wzy/scene/camera.hpp>
 #include <wzy/utilities/general.hpp>
 
 

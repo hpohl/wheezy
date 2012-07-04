@@ -1,5 +1,9 @@
 #include <wzy/gui/image.hpp>
 
+#include <wzy/render/data.hpp>
+#include <wzy/render/program.hpp>
+#include <wzy/utilities/mat.hpp>
+
 
 namespace wzy {
 namespace gui {
@@ -11,7 +15,7 @@ Image::Image(const UDim& position,
     mRenderData(render::Data::quad()),
     mMaterial(new render::Material) {
 
-    material()->textures()->push_back(texture);
+    material()->textures()->push_back(validate(texture));
 }
 
 Image::~Image() {

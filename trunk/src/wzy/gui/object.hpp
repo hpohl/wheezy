@@ -1,12 +1,10 @@
 #ifndef WZY_GUI_OBJECT_HPP
 #define WZY_GUI_OBJECT_HPP
 
-#include <algorithm>
 #include <memory>
 #include <set>
 
 #include <wzy/gui/udim.hpp>
-#include <wzy/render/framebuffer.hpp>
 
 
 namespace wzy {
