@@ -4,6 +4,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -14,8 +15,7 @@ class ResourceManager;
 
 class BasicItem {
 public:
-    typedef std::function<const std::shared_ptr<BasicItem>(const std::string&,
-                                                           const std::string&)> Creator;
+    typedef std::function<const std::shared_ptr<BasicItem>()> Creator;
 
     class Depency {
     public:
@@ -23,6 +23,11 @@ public:
                 const std::string& name) :
             mPackage(package),
             mName(name) { }
+
+        explicit Depency(std::istream& is) :
+            mPackage(),
+            mName()
+        { read(is); }
 
         const std::string package() const
         { return mPackage; }
@@ -36,6 +41,28 @@ public:
         void setName(const std::string& name)
         { mName = name; }
 
+        void read(std::istream& is) {
+            std::int32_t pkgNameLen = 0;
+            is.read(reinterpret_cast<char*>(&pkgNameLen), sizeof(pkgNameLen));
+            mPackage.resize(pkgNameLen);
+            is.read(&mPackage[0], pkgNameLen);
+
+            std::int32_t nameLen = 0;
+            is.read(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
+            mPackage.resize(nameLen);
+            is.read(&mPackage[0], nameLen);
+        }
+
+        void write(std::ostream& os) const {
+            std::int32_t pkgNameLen = mPackage.size();
+            os.write(reinterpret_cast<const char*>(&pkgNameLen), sizeof(pkgNameLen));
+            os.write(mPackage.data(), pkgNameLen);
+
+            std::int32_t nameLen = mName.size();
+            os.write(reinterpret_cast<const char*>(&nameLen), sizeof(nameLen));
+            os.write(mName.data(), nameLen);
+        }
+
     private:
         std::string mPackage;
         std::string mName;
@@ -43,9 +70,14 @@ public:
 
     class DepencyGroup {
     public:
-        DepencyGroup(const std::string& name) :
+        explicit DepencyGroup(const std::string& name) :
             mName(name),
             mDepencies() { }
+
+        explicit DepencyGroup(std::istream& is) :
+            mName(),
+            mDepencies()
+        { read(is); }
 
         const std::string name() const
         { return mName; }
@@ -59,15 +91,40 @@ public:
         void addDepency(const Depency& depency)
         { mDepencies.push_back(depency); }
 
+        void read(std::istream& is) {
+            std::int32_t nameLen = 0;
+            is.read(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
+            mName.resize(nameLen);
+            is.read(&mName[0], nameLen);
+
+            std::int32_t depSize = 0;
+            is.read(reinterpret_cast<char*>(&depSize), sizeof(depSize));
+
+            mDepencies.clear();
+            for (int i = 0; i < depSize; ++i)
+                mDepencies.push_back(Depency(is));
+        }
+
+        void write(std::ostream& os) const {
+            std::int32_t nameLen = mName.size();
+            os.write(reinterpret_cast<const char*>(&nameLen), sizeof(nameLen));
+            os.write(mName.data(), nameLen);
+
+            std::int32_t depSize = mDepencies.size();
+            os.write(reinterpret_cast<const char*>(&depSize), sizeof(depSize));
+
+            for (auto dep : mDepencies)
+                dep.write(os);
+        }
+
     private:
         std::string mName;
         std::vector<Depency> mDepencies;
     };
 
 
-    static const std::shared_ptr<BasicItem> create(int id,
-                                                   const std::string& name,
-                                                   const std::string& content);
+    // --------------------------------------------------------------------
+    static const std::shared_ptr<BasicItem> create(int id);
 
     static void registerCreator(int id, const Creator& creator)
     { creators().insert(std::make_pair(id, creator)); }
@@ -76,7 +133,8 @@ public:
     { creators().erase(id); }
 
 
-    BasicItem(int id, const std::string& name) :
+    // ---------------------------------------------------------
+    BasicItem(int id, const std::string& name = "") :
         mId(id),
         mName(name),
         mDepencyGroups() {
@@ -92,9 +150,6 @@ public:
     { return mName; }
 
 
-    virtual const std::string content() const = 0;
-
-
     const std::vector<DepencyGroup> depencyGroups() const
     { return mDepencyGroups; }
 
@@ -107,10 +162,8 @@ public:
                                const std::string& package,
                                const std::string& name);
 
-    ///virtual void read(const std::string& data) = 0;
-
-    //void write(std::ostream& os) const;
-    //void read(const ResourceManager& rm, std::istream& is);
+    void write(std::ostream& os) const;
+    void read(std::istream& is);
 
 private:
     static std::map<int, Creator>& creators()
@@ -119,6 +172,9 @@ private:
     int mId;
     std::string mName;
     std::vector<DepencyGroup> mDepencyGroups;
+
+    virtual void doRead(std::istream& is) = 0;
+    virtual void doWrite(std::ostream& os) const = 0;
 };
 
 template <class T>
@@ -141,9 +197,8 @@ public:
     virtual ~Item() = 0;
 
 private:
-    static const std::shared_ptr<BasicItem> create(const std::string& name,
-                                                   const std::string& content)
-    { return std::make_shared<Derived>(name, content); }
+    static const std::shared_ptr<BasicItem> create()
+    { return std::make_shared<Derived>(); }
 
     struct Initialiser {
         Initialiser()

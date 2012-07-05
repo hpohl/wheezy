@@ -48,40 +48,19 @@ const std::shared_ptr<Package> Package::load(const std::string& name) {
     std::int32_t numItems = 0;
     inf.read(reinterpret_cast<char*>(&numItems), sizeof(numItems));
 
-    // Read item locations
-    std::vector<std::int32_t> begins(numItems);
-    inf.read(reinterpret_cast<char*>(&begins[0]), numItems * sizeof(std::int32_t));
-
     // Create package
     auto pkg = std::make_shared<Package>(name, vers);
 
     // Read items
-    for (auto begin : begins) {
-
-        // Seek to location
-        inf.seekg(begin);
-
+    for (int i = 0; i < numItems; ++i) {
         // Read item ID
         int id = 0;
         inf.read(reinterpret_cast<char*>(&id), sizeof(id));
 
-        // Read item name length & name
-        std::int32_t itmNameLen = 0;
-        inf.read(reinterpret_cast<char*>(&itmNameLen), sizeof(itmNameLen));
-
-        std::string itmName(itmNameLen, 0);
-        inf.read(&itmName[0], itmNameLen);
-
-        // Read item size
-        std::int32_t size = 0;
-        inf.read(reinterpret_cast<char*>(&size), sizeof(size));
-
-        // Read item content
-        std::string data(size, 0);
-        inf.read(&data[0], size);
-
         // Add item to package
-        pkg->addItem(BasicItem::create(id, itmName, data));
+        auto itm = BasicItem::create(id);
+        itm->read(inf);
+        pkg->addItem(itm);
     }
 
     return pkg;
@@ -110,34 +89,14 @@ void Package::write(const std::shared_ptr<const Package>& pkg) {
     std::int32_t count = pkg->mItems.size();
     ouf.write(reinterpret_cast<char*>(&count), sizeof(count));
 
-    // Write item locations
-    auto items = pkg->mItems;
-    std::int32_t begin = ouf.tellp() + static_cast<decltype(ouf.tellp())>(items.size() * sizeof(begin));
-
-    for (auto itm : items) {
-        ouf.write(reinterpret_cast<char*>(&begin), sizeof(begin));
-        begin += sizeof(int) + sizeof(std::int32_t) + itm->name().length() + sizeof(std::int32_t) + itm->content().size();
-    }
-
-
     // Write packages
-    for (auto itm : items) {
+    for (const std::shared_ptr<BasicItem>& itm : pkg->mItems) {
         // Write item id
         int id = itm->id();
         ouf.write(reinterpret_cast<char*>(&id), sizeof(id));
 
-        // Write item name length & name
-        std::int32_t nameLen = itm->name().length();
-        ouf.write(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
-        ouf << itm->name();
-
-        // Write item size
-        auto content = itm->content();
-        std::int32_t size = content.size();
-        ouf.write(reinterpret_cast<char*>(&size), sizeof(size));
-
-        // Write item content
-        ouf << itm->content();
+        // Write item
+        itm->write(ouf);
     }
 }
 

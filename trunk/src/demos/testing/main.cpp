@@ -119,6 +119,14 @@ private:
 int main()
 try {
     auto pkg = std::make_shared<wzy::Package>("testpkg", wzy::Version(1, 0, 0));
+    auto itm = std::make_shared<wzy::UniversalItem>("textitm", "Hiifdfsdf, asdfjhshdfh, EEEEHsfhskdhfkslisalisafhdk");
+    pkg->addItem(itm);
+
+    wzy::Package::write(pkg);
+
+    auto litm = wzy::ResourceManager::singleton().getItem<wzy::UniversalItem>("testpkg", "textitm");
+    std::cout << litm->content() << std::endl;
+
 
     wzy::Engine& eng = wzy::Engine::singleton();
     eng.pushState<TestingState>();

@@ -9,15 +9,13 @@
 namespace wzy {
 
 
-const std::shared_ptr<BasicItem> BasicItem::create(int id,
-                                                   const std::string& name,
-                                                   const std::string& content) {
+const std::shared_ptr<BasicItem> BasicItem::create(int id) {
     auto it = creators().find(id);
 
     if (it == creators().end())
         throw Exception("Unable to create item from id " + toString(id) + ".");
 
-    return it->second(name, content);
+    return it->second();
 }
 
 
@@ -27,45 +25,35 @@ BasicItem::~BasicItem() {
 
 
 // --------------------------------------
-/*void BasicItem::write(std::ostream& os) const {
-    std::int32_t nDepencies = mDepencies.size();
-    os.write(reinterpret_cast<const char*>(&nDepencies), sizeof(nDepencies));
+void BasicItem::write(std::ostream& os) const {
+    std::int32_t nameLen = mName.size();
+    os.write(reinterpret_cast<const char*>(&nameLen), sizeof(nameLen));
+    os.write(mName.data(), nameLen);
 
-    for (auto dep : mDepencies) {
-        std::int32_t sizePkgName = dep.first.size();
-        os.write(reinterpret_cast<const char*>(&sizePkgName), sizeof(sizePkgName));
-        os.write(dep.first.data(), sizePkgName);
+    std::int32_t depSize = mDepencyGroups.size();
+    os.write(reinterpret_cast<const char*>(&depSize), sizeof(depSize));
 
-        std::int32_t sizeItmName = dep.second.size();
-        os.write(reinterpret_cast<const char*>(&sizeItmName), sizeof(sizeItmName));
-        os.write(dep.second.data(), sizeItmName);
-    }
+    for (auto depGroup : mDepencyGroups)
+        depGroup.write(os);
 
-    auto con = content();
-    std::int32_t conLen = content.size();
-
-    os.write(reinterpret_cast<const char*>(&conLen), sizeof(conLen));
-    os.write(con.data(), conLen);
+    doWrite(os);
 }
 
-void BasicItem::read(ResourceManager& rm, std::istream& is) {
-    std::int32_t nDepencies = 0;
-    is.read(reinterpret_cast<char*>(&nDepencies), sizeof(nDepencies));
+void BasicItem::read(std::istream& is) {
+    std::int32_t nameLen = 0;
+    is.read(reinterpret_cast<char*>(&nameLen), sizeof(nameLen));
+    mName.resize(nameLen);
+    is.read(&mName[0], nameLen);
 
-    for (int i = 0; i < nDepencies; ++i) {
-        std::int32_t sizePkgName = 0;
-        is.read(reinterpret_cast<char*>(&sizePkgName), sizeof(sizePkgName));
-        std::string pkgName(sizePkgName, 0);
-        is.read(reinterpret_cast<char*>(&pkgName[0]), sizePkgName);
+    std::int32_t depSize = 0;
+    is.read(reinterpret_cast<char*>(&depSize), sizeof(depSize));
 
-        std::int32_t sizeItmName = 0;
-        is.read(reinterpret_cast<char*>(&sizeItmName), sizeof(sizeItmName));
-        std::string itmName(sizeItmName, 0);
-        is.read(reinterpret_cast<char*>(&itmName[0]), sizeItmName);
+    mDepencyGroups.clear();
+    for (int i = 0; i < depSize; ++i)
+        mDepencyGroups.push_back(DepencyGroup(is));
 
-        rm.getItem()
-    }
-}*/
+    doRead(is);
+}
 
 const BasicItem::DepencyGroup BasicItem::getDepencyGroup(const std::string& name) const {
     auto pred = [&](const DepencyGroup& group) -> bool { return group.name() == name; };

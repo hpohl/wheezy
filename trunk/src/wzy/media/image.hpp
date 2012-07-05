@@ -28,15 +28,20 @@ public:
     typedef std::shared_ptr<Data> DataPtr;
     typedef std::shared_ptr<const Data> ConstDataPtr;
 
+    Image() :
+        mSize(Vector2ui(0, 0)),
+        mData(new Data) {
+    }
 
     Image(const Vector2ui& size, const ConstDataPtr& data) :
         mSize(size),
         mData(new Data(*validate(data))) { }
 
-    explicit Image(const std::string& data) :
+    Image(std::istream& is) :
         mSize(),
-        mData(new Data())
-    { loadFromString(data); }
+        mData() {
+        load(is);
+    }
 
     Image(const Image& other) :
         mSize(other.mSize),
@@ -57,9 +62,8 @@ public:
     const PixelType pixel(const Vector2ui& pos) const
     { return mData->at(pos.y() * mSize.x() + pos.x()); }
 
-    const std::string saveToString() const;
-    void loadFromString(const std::string& data);
-
+    void load(std::istream& is);
+    void save(std::ostream& os) const;
 
 private:
     Vector2ui mSize;
@@ -69,21 +73,21 @@ private:
 
 // ----------------------------------------------------
 template <class PixelType>
-const std::string Image<PixelType>::saveToString() const {
-    std::string ret;
-    ret.insert(0, reinterpret_cast<const char*>(mData->data()), mData->size() * sizeof(PixelType));
-    Vector2<std::int32_t> size = mSize;
-    ret.insert(0, reinterpret_cast<const char*>(&size), sizeof(size));
-    return ret;
+void Image<PixelType>::load(std::istream& is) {
+    Vector2<std::int32_t> size;
+    is.read(reinterpret_cast<char*>(&size), sizeof(size));
+    mSize = size;
+
+    std::size_t toRead = mSize.x() * mSize.y() * sizeof(PixelType);
+    mData->resize(toRead);
+    is.read(reinterpret_cast<char*>(&(*mData)[0]), toRead);
 }
 
 template <class PixelType>
-void Image<PixelType>::loadFromString(const std::string& data) {
-    mSize = reinterpret_cast<const Vector2<std::int32_t>&>(*data.data());
-    mData->clear();
-    mData->reserve((data.size() - sizeof(mSize)) / sizeof(PixelType));
-    mData->assign(reinterpret_cast<const PixelType*>(data.data() + sizeof(mSize)),
-                  reinterpret_cast<const PixelType*>(data.data() + data.size()));
+void Image<PixelType>::save(std::ostream& os) const {
+    Vector2<std::int32_t> size = mSize;
+    os.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    os.write(reinterpret_cast<const char*>(&(*mData)[0]), mSize.x() * mSize.y() * sizeof(PixelType));
 }
 
 

@@ -9,16 +9,16 @@ namespace wzy {
 
 class MaterialItem : public Item<MaterialItem, -20> {
 public:
-    MaterialItem(const std::string& name, const std::string& content);
-    MaterialItem(const std::string& name, const std::shared_ptr<render::Material>& material);
-
-    const std::string content() const override;
+    MaterialItem();
 
     const std::shared_ptr<render::Material> material()
     { return mMaterial; }
 
 private:
     std::shared_ptr<render::Material> mMaterial;
+
+    void doRead(std::istream& is) override;
+    void doWrite(std::ostream& os) const override;
 };
 
 }

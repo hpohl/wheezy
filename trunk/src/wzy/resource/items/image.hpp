@@ -11,9 +11,9 @@ namespace wzy {
 #define WZY_RESOURCE_ITEMS_IMAGE_DEFINE_ITEM(name, p, id) \
 class name##ImageItem : public Item<name##ImageItem, id> { \
 public: \
-    name##ImageItem(const std::string& name, const std::string& content) : \
-        Item(name), \
-        mImage(new Image<p>(content)) { \
+    name##ImageItem() : \
+        Item(), \
+        mImage(new Image<p>) { \
     } \
     \
     name##ImageItem(const std::string& name, const std::shared_ptr<Image<p> >& img) : \
@@ -21,14 +21,17 @@ public: \
         mImage(validate(img)) { \
     } \
     \
-    const std::string content() const override \
-    { return mImage->saveToString(); } \
-    \
     const std::shared_ptr<Image<p> > image() \
     { return mImage; } \
     \
 private: \
     std::shared_ptr<Image<p> > mImage; \
+    \
+    void doRead(std::istream& is) override \
+    { mImage->load(is); } \
+    \
+    void doWrite(std::ostream& os) const override \
+    { mImage->save(os); } \
 };
 
 WZY_RESOURCE_ITEMS_IMAGE_DEFINE_ITEM(RGBA, RGBAImagePixel, -10)
